@@ -29,6 +29,21 @@ npm run build
 
 ---
 
+## ▲ Vercel లో Deploy చేయడం (Deploy on Vercel)
+
+1. `node_modules` మరియు `dist` ఫోల్డర్లను GitHub కి పంపకూడదు — `.gitignore` లో అవి ఇప్పటికే ఉన్నాయి. (గతంలో అప్‌లోడ్ అయి ఉంటే: `git rm -r --cached node_modules dist` → commit → push.)
+2. Vercel → **Add New → Project** → మీ GitHub రిపోజిటరీ ఎంచుకోండి.
+3. Framework Preset: **Vite** (ఆటోమేటిక్‌గా వస్తుంది)
+   - Build Command: `npm run build`
+   - Output Directory: `dist`
+   - Install Command: `npm install`
+4. **Deploy** నొక్కండి. `prebuild` స్క్రిప్ట్ ఆటోమేటిక్‌గా రన్ అవుతుంది; అది విఫలమైనా బిల్డ్ ఆగదు (warning మాత్రమే).
+5. ప్రశ్నలు మార్చిన ప్రతిసారి GitHub కి push చేస్తే Vercel తనంతట తానే మళ్లీ deploy చేస్తుంది.
+
+> ⚠️ `node_modules` ను GitHub కి commit చేయడం వల్ల Vercel (Linux) బిల్డ్ విఫలమవుతుంది — `Cannot find module @rollup/rollup-linux-x64-gnu` వంటి ఎర్రర్ వస్తుంది. పై `.gitignore` పద్ధతి దాన్ని సరిచేస్తుంది.
+
+---
+
 ## 📊 Google Sheets అనుసంధానం (Google Apps Script Setup)
 
 ఈ ప్రాజెక్ట్‌లోని `google-apps-script.js` ఫైల్‌లో సిద్ధంగా ఉన్న కోడ్ ఉంది:
