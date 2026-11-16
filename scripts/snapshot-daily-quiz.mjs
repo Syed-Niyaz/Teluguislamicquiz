@@ -54,11 +54,12 @@ function addDays(dateKey, days) {
   return toDateKey(d);
 }
 
+// Never fail a deployment because of snapshotting.
+try {
 const { QUIZ_QUESTIONS } = await import(pathToFileURL(QUESTIONS_FILE).href);
 
 if (!Array.isArray(QUIZ_QUESTIONS) || !QUIZ_QUESTIONS.length) {
-  console.error('No questions found in src/data/questions.js');
-  process.exit(1);
+  throw new Error('No questions found in src/data/questions.js');
 }
 
 let snapshots = {};
@@ -111,4 +112,7 @@ if (created.length) {
   console.log(`Frozen ${created.length} day(s): ${created.join(', ')}`);
 } else {
   console.log(`All ${skipped.length} day(s) already frozen — history unchanged.`);
+}
+} catch (err) {
+  console.warn('Quiz snapshot skipped (build continues):', err.message);
 }
