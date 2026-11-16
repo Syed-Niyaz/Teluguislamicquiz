@@ -1,0 +1,120 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   ISLAMIC TELUGU QUIZ — SERENE, PEACEFUL, PREMIUM PALETTE
+   Colors: Soft Sage & Emerald Greens, Warm Sand Gold, Ivory White, Slate
+   ========================================================================== */
+
+:root {
+  --primary: #1b4d3e;
+  --primary-light: #2d6a4f;
+  --primary-soft: #eaf4ee;
+  --primary-softer: #f3f9f5;
+  --primary-dark: #12372a;
+
+  --gold: #bfa15f;
+  --gold-warm: #cfa853;
+  --gold-soft: #fcf9f0;
+  --gold-border: #eddcb1;
+
+  --sky: #1e526e;
+  --sky-soft: #eaf3f8;
+
+  --bg: #f3f7f4;
+  --card-bg: #ffffff;
+  --text-main: #192a20;
+  --text-muted: #4f6356;
+  --text-light: #7c9384;
+  --border-soft: #d3e2d8;
+
+  --font-te: 'Noto Sans Telugu', 'Segoe UI', sans-serif;
+  --font-ar: 'Amiri', 'Traditional Arabic', serif;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-te);
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(1200px 600px at 10% -10%, rgba(45, 106, 79, 0.16) 0%, transparent 60%),
+    radial-gradient(900px 500px at 100% 0%, rgba(191, 161, 95, 0.14) 0%, transparent 55%),
+    radial-gradient(700px 400px at 50% 100%, rgba(30, 82, 110, 0.08) 0%, transparent 60%),
+    linear-gradient(180deg, #f7fbf8 0%, #eef5f0 100%),
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0 L32 28 L60 30 L32 32 L30 60 L28 32 L0 30 L28 28 Z' fill='%232d6a4f' fill-opacity='0.03'/%3E%3C/svg%3E");
+  background-attachment: fixed;
+  color: var(--text-main);
+  min-height: 100vh;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* Telugu typography spacing */
+h1, h2, h3, h4, p, span, button, input, select, label {
+  font-family: var(--font-te);
+}
+
+.font-arabic {
+  font-family: var(--font-ar);
+  line-height: 1.5;
+}
+
+/* Smooth transitions */
+.transition-all-smooth {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Animations */
+@keyframes fadeInScale {
+  from { opacity: 0; transform: translateY(14px) scale(0.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+.animate-fade-in {
+  animation: fadeInScale 0.4s ease-out forwards;
+}
+
+.animate-float-slow {
+  animation: floatSlow 6s ease-in-out infinite;
+}
+
+/* Better focus visibility */
+:focus-visible {
+  outline: 2px solid rgba(45, 106, 79, 0.45);
+  outline-offset: 2px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.4);
+}
+::-webkit-scrollbar-thumb {
+  background: #bfd4c7;
+  border-radius: 999px;
+  border: 2px solid rgba(255,255,255,0.6);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9fc0aa;
+}
+
+::selection {
+  background: rgba(45, 106, 79, 0.18);
+  color: #12372a;
+}

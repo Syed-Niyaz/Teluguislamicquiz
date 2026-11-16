@@ -1,0 +1,31 @@
+{
+  "name": "islamic-telugu-quiz",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "prebuild": "node scripts/snapshot-daily-quiz.mjs",
+    "build": "vite build",
+    "preview": "vite preview",
+    "quiz:refresh-today": "node scripts/snapshot-daily-quiz.mjs --today"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.3.5",
+    "canvas-confetti": "^1.9.4",
+    "lucide-react": "^0.468.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/canvas-confetti": "^1.9.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.6.2",
+    "postcss": "^8.5.33",
+    "puppeteer": "^25.17.0",
+    "tailwindcss": "^4.3.5",
+    "vite": "^6.0.1"
+  }
+}
