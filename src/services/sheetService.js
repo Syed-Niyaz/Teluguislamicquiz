@@ -147,7 +147,7 @@ export const submitQuizToGoogleSheets = async (resultData) => {
     return {
       success: true,
       syncedToSheet: true,
-      message: 'మీ ఫలితం వెంటనే Google Sheet లో నమోదు చేయబడింది.'
+      message: 'మీ ఫలితం Google Sheet లో నమోదు చేయబడింది.'
     };
   } catch (error) {
     console.warn('Google Sheets submission error:', error);

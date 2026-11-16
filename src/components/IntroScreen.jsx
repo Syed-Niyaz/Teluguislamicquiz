@@ -21,7 +21,7 @@ export default function IntroScreen({ onStartQuiz, onOpenLeaderboard }) {
               </div>
               <h2 className="text-xl sm:text-2xl font-extrabold text-emerald-950">{todayQuiz?.label}</h2>
               <p className="text-sm text-emerald-800/80 mt-1">10 ప్రశ్నలు • 3 నిమిషాలు • రోజువారీ క్విజ్</p>
-              <p className="text-xs text-emerald-700 font-semibold mt-1">ఫలితాలు వెంటనే కనిపిస్తాయి</p>
+              <p className="text-xs text-emerald-700 font-semibold mt-1">ఫలితాలు & లీడర్‌బోర్డ్ WhatsApp ఛానెల్‌లో</p>
             </div>
           </div>
           <div className="flex flex-col sm:flex-row gap-2.5 mt-4">

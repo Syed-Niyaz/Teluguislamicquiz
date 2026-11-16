@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import confetti from 'canvas-confetti';
+import React, { useState } from 'react';
 import {
   CheckCircle2,
   XCircle,
@@ -11,12 +10,14 @@ import {
   HeartHandshake,
   ExternalLink,
   Clock,
-  CalendarDays
+  CalendarDays,
+  Trophy
 } from 'lucide-react';
 import { toDateKey } from '../data/dailyQuizzes';
 
 const WHATSAPP_CHANNEL_URL = 'https://whatsapp.com/channel/0029Vb9fsvDFHWpzNY1oTD1g';
-const SITE_URL = 'https://example.com/islamic-telugu-quiz'; // TODO: replace with real site link
+const SITE_URL = 'https://teluguislamicquizonline.vercel.app';
+const SITE_LABEL = 'teluguislamicquizonline.vercel.app';
 
 export default function ResultScreen({
   resultData,
@@ -28,20 +29,6 @@ export default function ResultScreen({
   const [showReview, setShowReview] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  useEffect(() => {
-    // Soft celebration confetti
-    try {
-      confetti({
-        particleCount: 60,
-        spread: 70,
-        origin: { y: 0.6 },
-        colors: ['#2d6a4f', '#40916c', '#bfa15f', '#d4af37']
-      });
-    } catch (e) {
-      // ignore
-    }
-  }, []);
-
   const { score, total, timeTakenFormatted, percentage, answers } = resultData;
   const scorePercent = total ? (score / total) * 100 : 0;
   const totalMinutes = quizInfo?.timeSeconds ? Math.round(quizInfo.timeSeconds / 60) : 3;
@@ -49,6 +36,10 @@ export default function ResultScreen({
     ? `${String(Math.floor(quizInfo.timeSeconds / 60)).padStart(2, '0')}:${String(quizInfo.timeSeconds % 60).padStart(2, '0')}`
     : '03:00';
   const isPastQuiz = !!quizInfo?.date && quizInfo.date < toDateKey();
+
+  // Daily / weekly results are NOT shown instantly: players are directed to the
+  // WhatsApp channel. Past quizzes are practice, so their result stays visible.
+  const showScore = isPastQuiz;
 
   const getGreeting = () => {
     if (scorePercent >= 90) {
@@ -63,19 +54,31 @@ export default function ResultScreen({
     return { title: 'ధన్యవాదాలు!', desc: 'ప్రశ్నల సమాధానాలు మరియు వివరణలను క్రింద చూడండి.' };
   };
 
-  const greeting = getGreeting();
+  const greeting = showScore
+    ? getGreeting()
+    : {
+        title: 'జజాకల్లాహు ఖైర్!',
+        desc: 'మీ జవాబులు విజయవంతంగా స్వీకరించబడ్డాయి.'
+      };
 
   const handleShare = () => {
-    const text = `☪️ ఇస్లామిక్ తెలుగు క్విజ్ ఫలితాలు${
-      quizInfo?.label ? `\n📅 తేదీ: ${quizInfo.label}` : ''
-    }\n👤 పేరు: ${userData.name}\n📍 ప్రాంతం: ${userData.location}\n🏆 స్కోర్: ${score} / ${total} (${percentage})\n⏱️ సమయం: ${timeTakenFormatted} (${totalMinutes} నిమిషాల్లో)\n\n🔗 క్విజ్ ఆడండి: ${SITE_URL}\n📢 WhatsApp చానల్: ${WHATSAPP_CHANNEL_URL}\nమీ స్నేహితులతో షేర్ చేసి సవాబ్ సంపాదించండి.`;
+    const text = `☪️ ఇస్లామిక్ తెలుగు క్విజ్${
+      quizInfo?.label ? `\n📅 ${quizInfo.label}` : ''
+    }${userData?.name ? `\n👤 ${userData.name}` : ''}
+
+ఈరోజు క్విజ్ ఆడి మీ ఇస్లామిక్ జ్ఞానాన్ని పరీక్షించుకోండి!
+🔗 క్విజ్ లింక్: ${SITE_URL}
+📢 ఫలితాలు & లీడర్‌బోర్డ్ — WhatsApp ఛానెల్: ${WHATSAPP_CHANNEL_URL}
+
+మీ స్నేహితులతో షేర్ చేసి సవాబ్ సంపాదించండి.`;
 
     if (navigator.share) {
       navigator.share({
         title: 'ఇస్లామిక్ తెలుగు క్విజ్',
-        text: text
+        text,
+        url: SITE_URL
       }).catch(() => {});
-    } else {
+    } else if (navigator.clipboard) {
       navigator.clipboard.writeText(text);
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
@@ -112,33 +115,48 @@ export default function ResultScreen({
         )}
 
         <p className="text-xs sm:text-sm text-emerald-700 font-semibold mb-6">
-          {isPastQuiz ? '✅ ప్రాక్టీస్ ఫలితాలు సిద్ధంగా ఉన్నాయి' : '✅ మీ ఫలితం వెంటనే నమోదు అయ్యింది'}
+          {showScore ? '✅ ప్రాక్టీస్ ఫలితాలు సిద్ధంగా ఉన్నాయి' : '✅ మీ ఫలితం నమోదు అయ్యింది'}
         </p>
 
-        {/* Instant Result Stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-3.5 mb-6">
-          <div className="bg-emerald-50/80 border border-emerald-200/90 rounded-2xl p-3 sm:p-4 shadow-sm">
-            <span className="text-[11px] sm:text-xs text-emerald-800 font-semibold block mb-1">సరైన సమాధానాలు</span>
-            <div className="text-2xl sm:text-3xl font-bold text-emerald-950">
-              {score} <span className="text-sm text-emerald-700 font-normal">/ {total}</span>
+        {/* Practice quizzes: score is shown. Daily/weekly: score is announced on WhatsApp. */}
+        {showScore ? (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-3.5 mb-6">
+            <div className="bg-emerald-50/80 border border-emerald-200/90 rounded-2xl p-3 sm:p-4 shadow-sm">
+              <span className="text-[11px] sm:text-xs text-emerald-800 font-semibold block mb-1">సరైన సమాధానాలు</span>
+              <div className="text-2xl sm:text-3xl font-bold text-emerald-950">
+                {score} <span className="text-sm text-emerald-700 font-normal">/ {total}</span>
+              </div>
+            </div>
+
+            <div className="bg-amber-50/80 border border-amber-200/90 rounded-2xl p-3 sm:p-4 shadow-sm">
+              <span className="text-[11px] sm:text-xs text-amber-800 font-semibold block mb-1">శాతం (Accuracy)</span>
+              <div className="text-2xl sm:text-3xl font-bold text-amber-950">{percentage}</div>
+            </div>
+
+            <div className="bg-sky-50/80 border border-sky-200/90 rounded-2xl p-3 sm:p-4 shadow-sm">
+              <span className="text-[11px] sm:text-xs text-sky-800 font-semibold block mb-1">తీసుకున్న సమయం</span>
+              <div className="text-2xl sm:text-3xl font-bold text-sky-950 font-mono">{timeTakenFormatted}</div>
+            </div>
+
+            <div className="bg-purple-50/80 border border-purple-200/90 rounded-2xl p-3 sm:p-4 shadow-sm">
+              <span className="text-[11px] sm:text-xs text-purple-800 font-semibold block mb-1">మొత్తం సమయం</span>
+              <div className="text-2xl sm:text-3xl font-bold text-purple-950 font-mono">{totalTimeFormatted}</div>
             </div>
           </div>
-
-          <div className="bg-amber-50/80 border border-amber-200/90 rounded-2xl p-3 sm:p-4 shadow-sm">
-            <span className="text-[11px] sm:text-xs text-amber-800 font-semibold block mb-1">శాతం (Accuracy)</span>
-            <div className="text-2xl sm:text-3xl font-bold text-amber-950">{percentage}</div>
+        ) : (
+          <div className="rounded-2xl border-2 border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-amber-50 p-4 sm:p-6 mb-6">
+            <div className="w-12 h-12 mx-auto rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center mb-3 shadow-sm">
+              <Trophy className="w-6 h-6" />
+            </div>
+            <div className="text-base sm:text-lg font-extrabold text-emerald-950 mb-1.5">
+              ఫలితాలు & లీడర్‌బోర్డ్
+            </div>
+            <p className="text-xs sm:text-sm text-emerald-900/85 leading-relaxed max-w-md mx-auto">
+              మీ స్కోర్ మరియు లీడర్‌బోర్డ్ స్థానం మా <strong>WhatsApp ఛానెల్</strong>లో ప్రచురించబడుతాయి.
+              ఇప్పుడే చేరి మీ ఫలితాలు చూడండి.
+            </p>
           </div>
-
-          <div className="bg-sky-50/80 border border-sky-200/90 rounded-2xl p-3 sm:p-4 shadow-sm">
-            <span className="text-[11px] sm:text-xs text-sky-800 font-semibold block mb-1">తీసుకున్న సమయం</span>
-            <div className="text-2xl sm:text-3xl font-bold text-sky-950 font-mono">{timeTakenFormatted}</div>
-          </div>
-
-          <div className="bg-purple-50/80 border border-purple-200/90 rounded-2xl p-3 sm:p-4 shadow-sm">
-            <span className="text-[11px] sm:text-xs text-purple-800 font-semibold block mb-1">మొత్తం సమయం</span>
-            <div className="text-2xl sm:text-3xl font-bold text-purple-950 font-mono">{totalTimeFormatted}</div>
-          </div>
-        </div>
+        )}
 
         {/* Sheet Sync Status message */}
         {sheetStatus && (
@@ -155,10 +173,10 @@ export default function ResultScreen({
           <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-left h-full flex flex-col">
             <div className="flex items-center gap-2 font-bold text-emerald-950 mb-1.5">
               <MessageCircle className="w-4 h-4 text-emerald-700" />
-              <span>WhatsApp లో ఫలితాలు చూడండి</span>
+              <span>WhatsApp లో ఫలితాలు & లీడర్‌బోర్డ్</span>
             </div>
             <p className="text-sm text-emerald-900/85 leading-relaxed mb-4 flex-1">
-              మీ స్కోర్/ఫలితాల కోసం మా WhatsApp చానల్‌ను చూడండి (Check your score on our WhatsApp).
+              మీ స్కోర్ మరియు లీడర్‌బోర్డ్ ర్యాంక్ మా WhatsApp ఛానెల్‌లో ప్రచురించబడతాయి. ఇప్పుడే చేరండి.
             </p>
             <a
               href={WHATSAPP_CHANNEL_URL}
@@ -167,7 +185,7 @@ export default function ResultScreen({
               className="inline-flex w-full items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-sm font-semibold transition mt-auto"
             >
               <MessageCircle className="w-4 h-4" />
-              <span>Open WhatsApp Channel</span>
+              <span>WhatsApp ఛానెల్‌లో చేరండి</span>
               <ExternalLink className="w-4 h-4" />
             </a>
           </div>
@@ -178,7 +196,7 @@ export default function ResultScreen({
               <span>మిత్రులతో షేర్ చేయండి</span>
             </div>
             <p className="text-sm text-sky-900/85 leading-relaxed mb-4 flex-1">
-              ఈ క్విజ్‌ను మీ స్నేహితులతో షేర్ చేయండి. మంచి పనిని వ్యాప్తి చేయడంలో సహకరించి సవాబ్ (good deeds) సంపాదించండి.
+              ఈ క్విజ్‌ను మీ స్నేహితులతో షేర్ చేయండి. షేర్‌లో సైట్ లింక్ మరియు WhatsApp ఛానెల్ లింక్ ఆటోమేటిక్‌గా వెళ్తాయి.
             </p>
             <button
               type="button"
@@ -267,9 +285,9 @@ export default function ResultScreen({
       <div className="mt-4 flex items-center justify-center gap-2 text-xs text-emerald-800/80 font-medium text-center">
         <Clock className="w-4 h-4 text-emerald-700 shrink-0" />
         <span>
-          {isPastQuiz
+          {showScore
             ? 'ఇది ప్రాక్టీస్ క్విజ్ — ఫలితం లీడర్‌బోర్డ్‌కు జోడించబడదు.'
-            : 'ఫలితాలు వెంటనే సేవ్ అవుతాయి. లీడర్‌బోర్డ్ అడ్మిన్ మాత్రమే చూడగలరు.'}
+            : `ఫలితాలు & లీడర్‌బోర్డ్ WhatsApp ఛానెల్‌లో ప్రచురించబడతాయి • ${SITE_LABEL}`}
         </span>
       </div>
     </div>
