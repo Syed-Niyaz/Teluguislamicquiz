@@ -14,8 +14,7 @@ import {
   Trophy
 } from 'lucide-react';
 import { toDateKey } from '../data/dailyQuizzes';
-
-const WHATSAPP_CHANNEL_URL = 'https://whatsapp.com/channel/0029Vb9fsvDFHWpzNY1oTD1g';
+import { WHATSAPP_CHANNEL_URL } from '../data/links';
 const SITE_URL = 'https://teluguislamicquizonline.vercel.app';
 const SITE_LABEL = 'teluguislamicquizonline.vercel.app';
 
