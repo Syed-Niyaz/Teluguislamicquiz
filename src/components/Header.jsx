@@ -40,11 +40,11 @@ export default function Header({ onGoHome, onOpenPrevious, onOpenLeaderboard, on
           href={WHATSAPP_CHANNEL_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="shrink-0 inline-flex items-center justify-center gap-1.5 rounded-xl sm:rounded-2xl bg-emerald-700 hover:bg-emerald-800 text-white px-2.5 py-2 h-10 sm:h-11 sm:px-4 shadow-sm transition cursor-pointer"
+          className="shrink-0 inline-flex items-center justify-center gap-1.5 rounded-xl sm:rounded-2xl bg-[#25D366] hover:bg-[#1fb855] text-white px-2.5 py-2 h-10 sm:h-11 sm:px-4 shadow-sm shadow-green-600/20 transition cursor-pointer"
           aria-label="WhatsApp ఛానెల్ — ఫలితాలు & లీడర్ బోర్డ్"
           title="ఫలితాలు & లీడర్ బోర్డ్ — WhatsApp ఛానెల్"
         >
-          <MessageCircle className="w-5 h-5" />
+          <MessageCircle className="w-5 h-5" fill="currentColor" strokeWidth={1.5} />
           <span className="hidden sm:inline text-xs sm:text-sm font-bold">WhatsApp</span>
         </a>
 

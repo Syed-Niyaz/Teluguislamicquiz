@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react';
-import { ArrowRight, Award, CalendarDays, Lock, PlayCircle, Trophy, Clock, TrendingUp, ChevronRight } from 'lucide-react';
+import { ArrowRight, Award, CalendarDays, Lock, PlayCircle, Trophy, Clock, TrendingUp, ChevronRight, MessageCircle } from 'lucide-react';
 import { getDailyQuizSchedule, getWeeklyTopQuiz, toDateKey } from '../data/dailyQuizzes';
 import { ACHIEVEMENTS, getAchievementSnapshot } from '../services/achievementService';
+import { WHATSAPP_CHANNEL_URL } from '../data/links';
 
 export default function IntroScreen({ onStartQuiz, onOpenLeaderboard, onOpenProgress, onEditProfile, savedUser }) {
   const schedule = useMemo(() => getDailyQuizSchedule(10, 0), []);
@@ -23,6 +24,15 @@ export default function IntroScreen({ onStartQuiz, onOpenLeaderboard, onOpenProg
           <h2 className="text-xl sm:text-2xl font-extrabold text-emerald-950">{todayQuiz?.label}</h2>
           <p className="text-sm text-slate-600 mt-2 font-medium">10 ప్రశ్నలు • 3 నిమిషాలు • రోజువారీ క్విజ్</p>
           <p className="text-xs text-teal-700 font-semibold mt-1.5">ఫలితాలు & లీడర్‌బోర్డ్ WhatsApp ఛానెల్‌లో</p>
+          <a
+            href={WHATSAPP_CHANNEL_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 inline-flex items-center justify-center gap-2 self-start px-4 py-2.5 rounded-xl bg-[#25D366] hover:bg-[#1fb855] text-white text-xs sm:text-sm font-bold shadow-sm shadow-green-600/20 transition"
+          >
+            <MessageCircle className="w-4 h-4" fill="currentColor" strokeWidth={1.5} />
+            <span>WhatsApp ఛానెల్‌లో చేరండి</span>
+          </a>
 
           {savedUser?.name && (
             <div className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs sm:text-sm text-emerald-900 bg-emerald-50/70 border border-emerald-100 rounded-xl px-3.5 py-2.5">
