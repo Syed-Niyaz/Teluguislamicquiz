@@ -21,6 +21,7 @@ import {
   CalendarCheck
 } from 'lucide-react';
 import { formatDateLabel, toDateKey } from '../data/dailyQuizzes';
+import { getBadgeIcon } from '../data/badgeIcons';
 import {
   ACHIEVEMENTS,
   getAchievementSnapshot,
@@ -43,25 +44,31 @@ const ICONS = {
   trophy: Trophy
 };
 
+// Unlocked badges are always emerald / teal green.
 const TONES = {
   niyyat: 'text-emerald-700 bg-emerald-50 ring-emerald-200',
-  talib: 'text-sky-700 bg-sky-50 ring-sky-200',
-  sabr: 'text-indigo-700 bg-indigo-50 ring-indigo-200',
-  rah: 'text-amber-700 bg-amber-50 ring-amber-200',
-  nurani: 'text-teal-700 bg-teal-50 ring-teal-200',
-  fath: 'text-yellow-800 bg-yellow-50 ring-yellow-300',
-  jawahir: 'text-slate-600 bg-slate-50 ring-slate-300',
-  istiqamat: 'text-emerald-800 bg-emerald-50 ring-emerald-300',
-  barakat: 'text-amber-800 bg-amber-50 ring-amber-300',
-  nurul: 'text-yellow-800 bg-yellow-50 ring-yellow-400'
+  talib: 'text-teal-700 bg-teal-50 ring-teal-200',
+  sabr: 'text-emerald-700 bg-emerald-50 ring-emerald-200',
+  rah: 'text-teal-700 bg-teal-50 ring-teal-200',
+  nurani: 'text-emerald-700 bg-emerald-50 ring-emerald-200',
+  fath: 'text-emerald-800 bg-emerald-50 ring-emerald-300',
+  jawahir: 'text-teal-800 bg-teal-50 ring-teal-200',
+  istiqamat: 'text-emerald-700 bg-emerald-50 ring-emerald-200',
+  barakat: 'text-teal-800 bg-teal-50 ring-teal-300',
+  nurul: 'text-emerald-800 bg-emerald-50 ring-emerald-300'
 };
 
+// Locked badges: muted blue-grey.
+const LOCKED_MEDALLION = 'bg-[#eaf0f5] text-[#8a9daf] ring-[#d6e1ea]';
+const LOCKED_CARD = 'border-[#dbe5ee] bg-[#f5f9fb] hover:border-[#c7d8e6]';
+
+// Small accents: soft gold, sky blue, light pink.
 const TIER_CHIP = {
-  bronze: 'text-amber-800 bg-amber-50 ring-amber-200',
-  silver: 'text-slate-600 bg-slate-50 ring-slate-200',
+  bronze: 'text-[#9a7427] bg-[#fdf8ec] ring-[#f0e2be]',
+  silver: 'text-[#6c8398] bg-[#eef2f6] ring-[#d7e0e8]',
   emerald: 'text-emerald-800 bg-emerald-50 ring-emerald-200',
-  gold: 'text-yellow-900 bg-yellow-50 ring-yellow-300',
-  premium: 'text-amber-900 bg-amber-50 ring-amber-300'
+  gold: 'text-[#9a7427] bg-[#fdf8ec] ring-[#e8cf95]',
+  premium: 'text-[#a85c72] bg-[#fdf2f5] ring-[#f3d4dd]'
 };
 
 const APPRECIATION =
@@ -72,16 +79,34 @@ const EMPTY_APPRECIATION =
 
 function BadgeMedallion({ badge, unlocked, size = 'md' }) {
   const Icon = ICONS[badge.iconKey] || Award;
+  const iconUrl = getBadgeIcon(badge);
   const dimension = size === 'lg' ? 'w-16 h-16 rounded-[20px]' : 'w-12 h-12 rounded-2xl';
+  const iconSize = size === 'lg' ? 'w-8 h-8' : 'w-6 h-6';
   return (
     <div
       className={`${dimension} shrink-0 ring-2 flex items-center justify-center transition-all duration-300 ${
         unlocked
           ? `${TONES[badge.id]}`
-          : 'bg-slate-100 text-slate-400 ring-slate-200 blur-[1px]'
+          : `${LOCKED_MEDALLION}`
       }`}
     >
-      <Icon className={size === 'lg' ? 'w-7 h-7' : 'w-5 h-5'} strokeWidth={1.7} />
+      {iconUrl ? (
+        <img
+          src={iconUrl}
+          alt=""
+          aria-hidden="true"
+          className={`${iconSize} object-contain transition-all duration-300 ${
+            unlocked ? '' : 'grayscale blur-[1.5px] opacity-60'
+          }`}
+        />
+      ) : (
+        <Icon
+          className={`${size === 'lg' ? 'w-7 h-7' : 'w-5 h-5'} ${
+            unlocked ? '' : 'blur-[1px]'
+          }`}
+          strokeWidth={1.7}
+        />
+      )}
     </div>
   );
 }
@@ -95,7 +120,7 @@ function BadgeDetailModal({ badge, unlocked, unlockedDate, progress, onClose }) 
 
   return (
     <div
-      className="fixed inset-0 z-[80] bg-emerald-950/50 backdrop-blur-[2px] flex items-center justify-center p-4 animate-fade-in"
+      className="fixed inset-0 z-[80] bg-teal-950/25 backdrop-blur-[2px] flex items-center justify-center p-4 animate-fade-in"
       onClick={onClose}
       role="presentation"
     >
@@ -104,9 +129,12 @@ function BadgeDetailModal({ badge, unlocked, unlockedDate, progress, onClose }) 
         aria-modal="true"
         aria-label={badge.title}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-sm rounded-3xl bg-white border border-emerald-100 shadow-2xl overflow-hidden"
+        className="w-full max-w-sm rounded-3xl bg-white border border-emerald-200/80 shadow-2xl overflow-hidden"
       >
-        <div className="h-1 bg-gradient-to-r from-emerald-800 via-amber-400 to-emerald-800" />
+        <div
+          className="h-1"
+          style={{ background: 'linear-gradient(90deg, #0f766e 0%, #d4af63 34%, #5aa9d6 67%, #e8a8b8 100%)' }}
+        />
         <div className="p-6 text-center">
           <button
             type="button"
@@ -135,18 +163,18 @@ function BadgeDetailModal({ badge, unlocked, unlockedDate, progress, onClose }) 
               </div>
             </div>
           ) : (
-            <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-3.5">
-              <div className="flex items-center justify-between text-xs font-bold text-slate-700">
+            <div className="mt-5 rounded-2xl border border-[#d6e1ea] bg-[#f5f9fb] p-3.5">
+              <div className="flex items-center justify-between text-xs font-bold text-[#6c8398]">
                 <span>పురోగతి</span>
                 <span>{progress.current} / {progress.target}</span>
               </div>
-              <div className="mt-2 h-2 rounded-full bg-slate-200 overflow-hidden">
+              <div className="mt-2 h-2 rounded-full bg-[#e2eaf1] overflow-hidden">
                 <div
-                  className="h-full rounded-full bg-emerald-700 transition-all duration-500"
+                  className="h-full rounded-full bg-[#9db1c2] transition-all duration-500"
                   style={{ width: `${progress.percent}%` }}
                 />
               </div>
-              <div className="mt-2 inline-flex items-center gap-1.5 text-xs text-slate-500 font-medium">
+              <div className="mt-2 inline-flex items-center gap-1.5 text-xs text-[#8a9daf] font-medium">
                 <Lock className="w-3.5 h-3.5" /> ఇంకా లాక్ అయ్యే ఉంది
               </div>
             </div>
@@ -213,14 +241,17 @@ export default function ProgressScreen({ onStartQuiz }) {
       </div>
 
       {/* Profile card */}
-      <section className="rounded-[28px] border border-amber-200/80 bg-white shadow-[0_8px_28px_rgba(18,55,42,0.06)] overflow-hidden">
-        <div className="h-1 bg-gradient-to-r from-emerald-900 via-amber-400 to-emerald-900" />
+      <section className="card-surface rounded-[28px] overflow-hidden">
+        <div
+          className="h-1"
+          style={{ background: 'linear-gradient(90deg, #0f766e 0%, #d4af63 32%, #5aa9d6 66%, #e8a8b8 100%)' }}
+        />
         <div className="p-5 sm:p-7 flex flex-wrap items-center gap-5">
-          <div className="w-14 h-14 rounded-2xl bg-emerald-900 text-amber-100 ring-4 ring-emerald-50 flex items-center justify-center text-xl font-extrabold shadow-sm shrink-0">
+          <div className="w-14 h-14 rounded-2xl bg-teal-700 text-white ring-4 ring-teal-50 flex items-center justify-center text-xl font-extrabold shadow-sm shrink-0">
             {initials}
           </div>
           <div className="min-w-0 flex-1">
-            <div className="text-[11px] font-bold text-amber-800 tracking-wide">
+            <div className="text-[11px] font-bold text-teal-700 tracking-wide">
               అల్లాహ్ రహ్మత్ తో
             </div>
             <h2 className="truncate text-xl sm:text-2xl font-extrabold text-emerald-950">{name}</h2>
@@ -252,11 +283,11 @@ export default function ProgressScreen({ onStartQuiz }) {
       <div className="mt-5 grid grid-cols-2 lg:grid-cols-4 gap-3">
         {[
           { icon: CalendarCheck, label: 'క్విజ్ లు', value: stats.quizzes, tone: 'text-emerald-700' },
-          { icon: TrendingUp, label: 'మొత్తం పాయింట్లు', value: stats.totalPoints, tone: 'text-amber-700' },
-          { icon: Target, label: 'ఉత్తమ శాతం', value: `${stats.bestAccuracy}%`, tone: 'text-sky-700' },
-          { icon: Flame, label: 'గరిష్ట వరుస రోజులు', value: stats.maxStreak, tone: 'text-rose-700' }
+          { icon: TrendingUp, label: 'మొత్తం పాయింట్లు', value: stats.totalPoints, tone: 'text-[#b58b3a]' },
+          { icon: Target, label: 'ఉత్తమ శాతం', value: `${stats.bestAccuracy}%`, tone: 'text-[#4b9ac7]' },
+          { icon: Flame, label: 'గరిష్ట వరుస రోజులు', value: stats.maxStreak, tone: 'text-[#c2798e]' }
         ].map((s) => (
-          <div key={s.label} className="rounded-2xl border border-emerald-100 bg-white p-4 shadow-[0_2px_10px_rgba(18,55,42,0.04)]">
+          <div key={s.label} className="card-surface rounded-2xl p-4">
             <div className="flex items-center gap-2 text-[11px] font-bold text-slate-500">
               <s.icon className={`w-3.5 h-3.5 ${s.tone}`} /> {s.label}
             </div>
@@ -269,11 +300,11 @@ export default function ProgressScreen({ onStartQuiz }) {
 
       {/* Next milestone */}
       {nextBadge && nextProgress && (
-        <div className="mt-5 rounded-2xl border border-emerald-100 bg-white p-4 sm:p-5 shadow-[0_2px_10px_rgba(18,55,42,0.04)]">
+        <div className="card-surface mt-5 rounded-2xl p-4 sm:p-5">
           <div className="flex flex-wrap items-center gap-3">
             <BadgeMedallion badge={nextBadge} unlocked={false} />
             <div className="min-w-0 flex-1">
-              <div className="text-[10px] font-bold tracking-wider text-amber-800 uppercase">
+              <div className="text-[10px] font-bold tracking-wider text-teal-700 uppercase">
                 తదుపరి మైలురాయి
               </div>
               <div className="text-sm font-extrabold text-emerald-950 truncate">{nextBadge.title}</div>
@@ -300,7 +331,7 @@ export default function ProgressScreen({ onStartQuiz }) {
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 className="text-lg sm:text-xl font-extrabold text-emerald-950 flex items-center gap-2">
-              <Award className="w-5 h-5 text-amber-700" /> సాధనలు
+              <Award className="w-5 h-5 text-teal-700" /> సాధనలు
             </h2>
             <p className="text-[11px] text-slate-500 font-medium mt-0.5">
               {unlockedCount} అన్ లాక్ · {lockedCount} లాక్ అయ్యాయి
@@ -339,8 +370,8 @@ export default function ProgressScreen({ onStartQuiz }) {
                 onClick={() => setSelected(badge)}
                 className={`relative min-h-[214px] rounded-2xl border p-4 text-left transition-all duration-200 cursor-pointer ${
                   isUnlocked
-                    ? 'border-emerald-200 bg-white shadow-[0_4px_16px_rgba(18,55,42,0.06)] hover:-translate-y-0.5 hover:shadow-[0_12px_26px_rgba(18,55,42,0.10)]'
-                    : 'border-slate-200 bg-slate-50/60 hover:border-slate-300'
+                    ? 'card-surface hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(15,118,110,0.10)]'
+                    : LOCKED_CARD
                 }`}
               >
                 {isUnlocked && (
@@ -349,11 +380,11 @@ export default function ProgressScreen({ onStartQuiz }) {
                 <div className="flex items-start justify-between gap-2">
                   <BadgeMedallion badge={badge} unlocked={isUnlocked} />
                   {isUnlocked ? (
-                    <span className="w-6 h-6 rounded-full bg-emerald-800 text-amber-50 flex items-center justify-center shrink-0">
+                    <span className="w-6 h-6 rounded-full bg-teal-700 text-white flex items-center justify-center shrink-0">
                       <Check className="w-3 h-3" />
                     </span>
                   ) : (
-                    <span className="w-6 h-6 rounded-full bg-white border border-slate-200 text-slate-400 flex items-center justify-center shrink-0">
+                    <span className="w-6 h-6 rounded-full bg-white border border-[#d6e1ea] text-[#8a9daf] flex items-center justify-center shrink-0">
                       <Lock className="w-3 h-3" />
                     </span>
                   )}
@@ -362,10 +393,10 @@ export default function ProgressScreen({ onStartQuiz }) {
                 <span className={`mt-3 inline-block text-[9px] font-bold px-2 py-0.5 rounded-full ring-1 ${TIER_CHIP[badge.tier]}`}>
                   {badge.tierLabel}
                 </span>
-                <div className={`mt-2 text-[13px] font-extrabold leading-snug ${isUnlocked ? 'text-emerald-950' : 'text-slate-600'}`}>
+                <div className={`mt-2 text-[13px] font-extrabold leading-snug ${isUnlocked ? 'text-emerald-950' : 'text-[#6c8398]'}`}>
                   {badge.title}
                 </div>
-                <p className="mt-1 text-[11px] leading-snug text-slate-500 font-medium min-h-[32px]">
+                <p className={`mt-1 text-[11px] leading-snug font-medium min-h-[32px] ${isUnlocked ? 'text-slate-500' : 'text-[#8a9daf]'}`}>
                   {badge.requirement}
                 </p>
 
@@ -376,13 +407,13 @@ export default function ProgressScreen({ onStartQuiz }) {
                     </div>
                   ) : (
                     <>
-                      <div className="h-1.5 rounded-full bg-slate-200/80 overflow-hidden">
+                      <div className="h-1.5 rounded-full bg-[#e2eaf1] overflow-hidden">
                         <div
-                          className="h-full rounded-full bg-slate-500 transition-all duration-500"
+                          className="h-full rounded-full bg-[#9db1c2] transition-all duration-500"
                           style={{ width: `${progress.percent}%` }}
                         />
                       </div>
-                      <div className="mt-1 text-[10px] font-semibold text-slate-400 tabular-nums">
+                      <div className="mt-1 text-[10px] font-semibold text-[#8a9daf] tabular-nums">
                         {progress.current} / {progress.target}
                       </div>
                     </>
@@ -396,7 +427,7 @@ export default function ProgressScreen({ onStartQuiz }) {
 
       {/* Recent activity */}
       {results.length > 0 && (
-        <section className="mt-8 rounded-2xl border border-emerald-100 bg-white p-4 sm:p-5 shadow-[0_2px_10px_rgba(18,55,42,0.04)]">
+        <section className="card-surface mt-8 rounded-2xl p-4 sm:p-5">
           <h2 className="text-sm sm:text-base font-extrabold text-emerald-950 flex items-center gap-2">
             <CalendarCheck className="w-4 h-4 text-emerald-700" /> ఇటీవలి ఇల్మ్ యాత్ర
           </h2>
@@ -434,7 +465,7 @@ export default function ProgressScreen({ onStartQuiz }) {
       <button
         type="button"
         onClick={() => onStartQuiz?.(toDateKey())}
-        className="mt-6 w-full py-3 rounded-2xl bg-emerald-900 hover:bg-emerald-950 text-amber-50 font-bold text-sm flex items-center justify-center gap-2 shadow-sm transition cursor-pointer"
+        className="mt-6 w-full py-3 rounded-2xl bg-teal-700 hover:bg-teal-800 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-sm transition cursor-pointer"
       >
         <span>ఈరోజు ఇల్మ్ పెంచుకుని కొత్త బ్యాడ్జ్ గెలవండి</span>
         <ChevronRight className="w-4 h-4" />
