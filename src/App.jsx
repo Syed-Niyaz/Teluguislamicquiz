@@ -175,8 +175,6 @@ export default function App() {
               onStartQuiz={handleStartQuizForDate}
               onOpenLeaderboard={handleOpenLeaderboard}
               onOpenProgress={() => setScreen('progress')}
-              onEditProfile={handleEditProfile}
-              savedUser={savedProfile}
             />
           )}
 

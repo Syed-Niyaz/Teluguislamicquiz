@@ -3,7 +3,7 @@ import { ArrowRight, Award, CalendarDays, Lock, PlayCircle, Trophy, Clock, Trend
 import { getDailyQuizSchedule, getWeeklyTopQuiz, toDateKey } from '../data/dailyQuizzes';
 import { ACHIEVEMENTS, getAchievementSnapshot } from '../services/achievementService';
 
-export default function IntroScreen({ onStartQuiz, onOpenLeaderboard, onOpenProgress, onEditProfile, savedUser }) {
+export default function IntroScreen({ onStartQuiz, onOpenLeaderboard, onOpenProgress }) {
   const schedule = useMemo(() => getDailyQuizSchedule(10, 0), []);
   const weeklyQuiz = useMemo(() => getWeeklyTopQuiz(new Date()), []);
   const todayKey = toDateKey();
@@ -23,24 +23,6 @@ export default function IntroScreen({ onStartQuiz, onOpenLeaderboard, onOpenProg
           <h2 className="text-xl sm:text-2xl font-extrabold text-emerald-950">{todayQuiz?.label}</h2>
           <p className="text-sm text-slate-600 mt-2 font-medium">10 ప్రశ్నలు • 3 నిమిషాలు • రోజువారీ క్విజ్</p>
           <p className="text-xs text-teal-700 font-semibold mt-1.5">ఫలితాలు & లీడర్‌బోర్డ్ WhatsApp ఛానెల్‌లో</p>
-
-          {savedUser?.name && (
-            <div className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs sm:text-sm text-emerald-900 bg-emerald-50/70 border border-emerald-100 rounded-xl px-3.5 py-2.5">
-              <span className="font-medium">
-                <span className="text-emerald-800/80">మీ వివరాలు:</span> {savedUser.name}
-                {savedUser.location ? `, ${savedUser.location}` : ''}
-              </span>
-              {onEditProfile && (
-                <button
-                  type="button"
-                  onClick={onEditProfile}
-                  className="font-semibold text-teal-700 hover:text-teal-900 underline underline-offset-2 cursor-pointer"
-                >
-                  మార్చండి
-                </button>
-              )}
-            </div>
-          )}
 
           <div className="flex flex-col sm:flex-row gap-3 mt-6 sm:mt-auto sm:pt-6">
             <button
