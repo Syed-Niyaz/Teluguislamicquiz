@@ -16,7 +16,7 @@
 
 ### 🎨 బ్యాడ్జ్ ఐకాన్ ఫైల్స్ (Adding your own badge icons)
 
-మీ స్వంత ఐకాన్ ఫైల్స్ `src/assets/badges/` లో పెట్టాలి. ఫైల్ పేరు బ్యాడ్జ్ id లేదా iconKey తో సరిపోవాలి — ఉదాహరణకు `niyyat.svg`, `sabr.png`, `crown.webp`. (`badge-` / `icon-` ప్రిఫిక్స్ కూడా అనుమతించబడుతుంది.) `.svg`, `.png`, `.webp`, `.jpg`, `.jpeg` ఫార్మాట్లు పని చేస్తాయి. 10వ బ్యాడ్జ్ (నూరుల్ హిదాయత్) కోసం `certificate.svg` లేదా `nurul.svg` పెట్టండి — certificate icon by Smashicons, Flaticon: https://www.flaticon.com/free-icons/certificate. ఫైల్ లేనప్పుడు అంతర్నిర్మిత లైన్ ఐకాన్ కనిపిస్తుంది. వివరాల కోసం `src/assets/badges/README.txt` చూడండి.
+మీ స్వంత ఐకాన్ ఫైల్స్ `src/assets/badges/` లో పెట్టాలి. ఫైల్ పేరు బ్యాడ్జ్ id లేదా iconKey తో సరిపోవాలి — ఉదాహరణకు `niyyat.svg`, `sabr.png`, `crown.webp`. (`badge-` / `icon-` ప్రిఫిక్స్ కూడా అనుమతించబడుతుంది.) ప్రస్తుతం 10 ఫైల్స్ మ్యాప్ అయ్యి ఉన్నాయి (`3d-target.png` → నియ్యత్-ఎ-ఖైర్, `goal (1).png` → తాలిబుల్ ఇల్మ్, `award.png` → సబ్ర్ వ సుక్ర్, `rating.png` → రాహే ఇల్మ్, `good-job.png` → నూరానీ ప్రయాణం, `confetti.png` → ఫత్హుల్ ఇల్మ్, `gold-bars.png` → జవాహిరుల్ ఇల్మ్, `trophy.png` → ఇస్తిఖామత్, `winner.png` → బరకతే ఇల్మ్, `winning.png` → నూరుల్ హిదాయత్). మ్యాపింగ్ మార్చాలంటే `src/data/badgeIcons.js` లోని `BADGE_ICON_FILES` ను సవరించండి. ఫైల్ లేనప్పుడు అంతర్నిర్మిత లైన్ ఐకాన్ కనిపిస్తుంది.
 
 ---
 

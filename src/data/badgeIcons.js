@@ -1,15 +1,8 @@
 // Badge icon registry.
 //
-// Drop your own icon files into `src/assets/badges/` and they are picked up
-// automatically — no code changes needed.
-//
-//   src/assets/badges/niyyat.svg   (matches badge id)
-//   src/assets/badges/sprout.png   (matches badge iconKey)
-//
-// Supported formats: .svg, .png, .webp, .jpg, .jpeg
-// Filename matching is case-insensitive and ignores spaces, dashes and the
-// optional "badge"/"icon" prefix. If no file matches, the component falls
-// back to the built-in line icons.
+// The 10 badge images live in `src/assets/badges/`. Each badge is mapped to
+// one file below — change the filename here if you replace an icon.
+// If a file is missing, the built-in line icon is used as a fallback.
 
 const files = import.meta.glob('../assets/badges/*.{svg,png,webp,jpg,jpeg}', {
   query: '?url',
@@ -31,10 +24,26 @@ const registry = Object.entries(files).reduce((acc, [path, url]) => {
   return acc;
 }, {});
 
-/** Returns the URL of a custom badge icon file, or null when none exists. */
+// Badge id → icon file in src/assets/badges/
+export const BADGE_ICON_FILES = {
+  niyyat: '3d-target.png',
+  talib: 'goal (1).png',
+  sabr: 'award.png',
+  rah: 'rating.png',
+  nurani: 'good-job.png',
+  fath: 'confetti.png',
+  jawahir: 'gold-bars.png',
+  istiqamat: 'trophy.png',
+  barakat: 'winner.png',
+  nurul: 'winning.png'
+};
+
+/** Returns the URL of a badge icon file, or null when none exists. */
 export function getBadgeIcon(badge) {
   if (!badge) return null;
+  const mapped = BADGE_ICON_FILES[badge.id];
   return (
+    (mapped && registry[normalise(mapped)]) ||
     registry[normalise(badge.id)] ||
     registry[normalise(badge.iconKey)] ||
     null
