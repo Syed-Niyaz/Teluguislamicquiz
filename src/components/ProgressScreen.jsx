@@ -226,8 +226,6 @@ export default function ProgressScreen({ onStartQuiz }) {
     return true;
   });
 
-  const initials = name.trim().charAt(0).toUpperCase() || 'అ';
-
   return (
     <div className="w-full max-w-6xl mx-auto pb-6 sm:pb-10 animate-fade-in space-y-6 sm:space-y-8">
       {/* Page heading */}
@@ -253,17 +251,12 @@ export default function ProgressScreen({ onStartQuiz }) {
         />
         <div className="p-5 sm:p-7 lg:p-8">
           <div className="flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-6">
-            <div className="flex items-center gap-4 min-w-0 flex-1">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-teal-700 text-white ring-4 ring-teal-50 flex items-center justify-center text-xl sm:text-2xl font-extrabold shadow-sm shrink-0">
-                {initials}
-              </div>
-              <div className="min-w-0">
-                <div className="text-[11px] font-bold text-teal-700 tracking-wide">అల్లాహ్ రహ్మత్ తో</div>
-                <h2 className="truncate text-xl sm:text-2xl font-extrabold text-emerald-950">{name}</h2>
-                <p className="mt-0.5 text-xs sm:text-sm text-slate-600 font-medium">
-                  ఇల్మ్ కోసం చేసే ప్రయత్నానికి బరకత్ ఉంది, ఇన్ షా అల్లాహ్.
-                </p>
-              </div>
+            <div className="min-w-0 flex-1">
+              <div className="text-[11px] font-bold text-teal-700 tracking-wide">అల్లాహ్ రహ్మత్ తో</div>
+              <h2 className="truncate text-xl sm:text-2xl font-extrabold text-emerald-950">{name}</h2>
+              <p className="mt-0.5 text-xs sm:text-sm text-slate-600 font-medium">
+                ఇల్మ్ కోసం చేసే ప్రయత్నానికి బరకత్ ఉంది, ఇన్ షా అల్లాహ్.
+              </p>
             </div>
 
             <div className="flex items-center justify-between sm:justify-end gap-4 sm:gap-6 pt-1 sm:pt-0">
