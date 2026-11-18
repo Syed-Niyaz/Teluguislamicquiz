@@ -250,7 +250,7 @@ export default function ProgressScreen({ onStartQuiz }) {
               <div className="text-[11px] font-bold text-teal-700 tracking-wide">అల్లాహ్ రహ్మత్ తో</div>
               <h2 className="truncate text-xl sm:text-2xl font-extrabold text-emerald-950">{name}</h2>
               <p className="mt-0.5 text-xs sm:text-sm text-slate-600 font-medium">
-                ఇల్మ్ కోసం చేసే ప్రయత్నానికి బరకత్ ఉంది, ఇన్ షా అల్లాహ్.
+                మాషా అల్లాహ్! జ్ఞానాన్ని పెంపొందించుకునే ప్రతి అడుగు మీకు మేలును, అల్లాహ్ అనుగ్రహాన్ని అందించుగాక.
               </p>
             </div>
 
