@@ -247,9 +247,8 @@ export default function ProgressScreen({ onStartQuiz }) {
         <div className="p-5 sm:p-7 lg:p-8">
           <div className="flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-6">
             <div className="min-w-0 flex-1">
-              <div className="text-[11px] font-bold text-teal-700 tracking-wide">అల్లాహ్ రహ్మత్ తో</div>
               <h2 className="truncate text-xl sm:text-2xl font-extrabold text-emerald-950">{name}</h2>
-              <p className="mt-0.5 text-xs sm:text-sm text-slate-600 font-medium">
+              <p className="mt-1 text-xs sm:text-sm text-slate-600 font-medium">
                 మాషా అల్లాహ్! జ్ఞానాన్ని పెంపొందించుకునే ప్రతి అడుగు మీకు మేలును, అల్లాహ్ అనుగ్రహాన్ని అందించుగాక.
               </p>
             </div>
