@@ -11,6 +11,7 @@ export const ACHIEVEMENTS = [
   {
     id: 'niyyat',
     icon: '🌱',
+    iconKey: 'sprout',
     title: 'నియ్యత్-ఎ-ఖైర్',
     requirement: 'మొదటి క్విజ్ పూర్తి చేయండి.',
     tier: 'bronze',
@@ -24,6 +25,7 @@ export const ACHIEVEMENTS = [
   {
     id: 'talib',
     icon: '📖',
+    iconKey: 'book',
     title: 'తాలిబుల్ ఇల్మ్',
     requirement: '5 క్విజ్ లు పూర్తి చేయండి.',
     tier: 'bronze',
@@ -37,6 +39,7 @@ export const ACHIEVEMENTS = [
   {
     id: 'sabr',
     icon: '🌙',
+    iconKey: 'moon',
     title: 'సబ్ర్ వ సుక్ర్',
     requirement: '3 రోజులు వరుసగా పాల్గొనండి.',
     tier: 'emerald',
@@ -50,6 +53,7 @@ export const ACHIEVEMENTS = [
   {
     id: 'rah',
     icon: '⭐',
+    iconKey: 'star',
     title: 'రాహే ఇల్మ్',
     requirement: 'మొత్తం 100 పాయింట్లు సంపాదించండి.',
     tier: 'silver',
@@ -63,6 +67,7 @@ export const ACHIEVEMENTS = [
   {
     id: 'nurani',
     icon: '✨',
+    iconKey: 'sparkles',
     title: 'నూరానీ ప్రయాణం',
     requirement: '7 రోజులు వరుసగా పాల్గొనండి.',
     tier: 'emerald',
@@ -76,6 +81,7 @@ export const ACHIEVEMENTS = [
   {
     id: 'fath',
     icon: '🏅',
+    iconKey: 'medal',
     title: 'ఫత్హుల్ ఇల్మ్',
     requirement: 'ఒక క్విజ్ లో 90% లేదా అంతకంటే ఎక్కువ సాధించండి.',
     tier: 'gold',
@@ -89,6 +95,7 @@ export const ACHIEVEMENTS = [
   {
     id: 'jawahir',
     icon: '💎',
+    iconKey: 'gem',
     title: 'జవాహిరుల్ ఇల్మ్',
     requirement: 'మొత్తం 500 పాయింట్లు సంపాదించండి.',
     tier: 'silver',
@@ -102,6 +109,7 @@ export const ACHIEVEMENTS = [
   {
     id: 'istiqamat',
     icon: '🕌',
+    iconKey: 'landmark',
     title: 'ఇస్తిఖామత్',
     requirement: '30 రోజుల పాల్గొనే ధారను కొనసాగించండి.',
     tier: 'emerald',
@@ -115,6 +123,7 @@ export const ACHIEVEMENTS = [
   {
     id: 'barakat',
     icon: '👑',
+    iconKey: 'crown',
     title: 'బరకతే ఇల్మ్',
     requirement: 'మొత్తం 1,000 పాయింట్లు సంపాదించండి.',
     tier: 'premium',
@@ -128,6 +137,7 @@ export const ACHIEVEMENTS = [
   {
     id: 'nurul',
     icon: '🏆',
+    iconKey: 'trophy',
     title: 'నూరుల్ హిదాయత్',
     requirement: 'లీడర్ బోర్డ్ లో మొదటి స్థానం సాధించండి.',
     tier: 'premium',

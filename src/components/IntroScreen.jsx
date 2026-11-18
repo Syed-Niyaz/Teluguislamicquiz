@@ -1,12 +1,15 @@
 import React, { useMemo } from 'react';
 import { ArrowRight, Award, CalendarDays, Lock, PlayCircle, Trophy, Clock, TrendingUp, ChevronRight } from 'lucide-react';
 import { getDailyQuizSchedule, getWeeklyTopQuiz, toDateKey } from '../data/dailyQuizzes';
+import { ACHIEVEMENTS, getAchievementSnapshot } from '../services/achievementService';
 
 export default function IntroScreen({ onStartQuiz, onOpenLeaderboard, onOpenProgress }) {
   const schedule = useMemo(() => getDailyQuizSchedule(10, 0), []);
   const weeklyQuiz = useMemo(() => getWeeklyTopQuiz(new Date()), []);
   const todayKey = toDateKey();
   const todayQuiz = schedule.find((q) => q.status === 'today');
+  const achievementState = getAchievementSnapshot();
+  const earnedBadges = ACHIEVEMENTS.filter((b) => achievementState.unlocked[b.id]).length;
 
   return (
     <div className="w-full max-w-5xl mx-auto animate-fade-in space-y-5 sm:space-y-6">
@@ -82,18 +85,31 @@ export default function IntroScreen({ onStartQuiz, onOpenLeaderboard, onOpenProg
       <button
         type="button"
         onClick={onOpenProgress}
-        className="w-full rounded-3xl border border-sky-200 bg-gradient-to-r from-sky-50 via-white to-emerald-50 p-4 sm:p-5 flex items-center gap-3 sm:gap-4 text-left shadow-sm hover:shadow-md transition cursor-pointer"
+        className="group w-full rounded-2xl border border-emerald-200/90 bg-white p-4 sm:p-5 flex items-center gap-3 sm:gap-4 text-left shadow-[0_2px_10px_rgba(18,55,42,0.04)] hover:shadow-[0_8px_22px_rgba(18,55,42,0.08)] transition cursor-pointer"
       >
-        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-sky-500 to-emerald-700 text-white flex items-center justify-center shadow-md shrink-0">
-          <TrendingUp className="w-6 h-6 sm:w-7 sm:h-7" />
+        <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-emerald-900 text-amber-100 ring-4 ring-emerald-50 flex items-center justify-center shrink-0">
+          <TrendingUp className="w-5 h-5" strokeWidth={1.8} />
         </div>
         <div className="min-w-0 flex-1">
-          <div className="text-base sm:text-lg font-extrabold text-emerald-950">మీ ప్రోగ్రెస్ & బ్యాడ్జ్ లు</div>
-          <p className="text-xs sm:text-sm text-emerald-800/80 mt-0.5 font-medium">
-            మీ పేరు, ఇల్మ్ ప్రయాణం, ఇస్లామిక్ అభినందనలు మరియు అందమైన బ్యాడ్జ్ లు చూడండి.
+          <div className="text-[10px] font-bold tracking-[0.18em] text-amber-800 uppercase">
+            ఇల్మ్ యాత్ర
+          </div>
+          <div className="text-sm sm:text-base font-extrabold text-emerald-950">
+            మీ ప్రోగ్రెస్ & బ్యాడ్జ్ లు
+          </div>
+          <p className="text-[11px] sm:text-xs text-slate-500 font-medium mt-0.5">
+            పాయింట్లు, వరుస రోజులు, అభినందనలు మరియు సాధనలు చూడండి.
           </p>
         </div>
-        <ChevronRight className="w-6 h-6 text-sky-700 shrink-0" />
+        <div className="shrink-0 flex items-center gap-2">
+          <div className="text-right hidden sm:block">
+            <div className="text-base font-extrabold text-emerald-900 tabular-nums">
+              {earnedBadges}<span className="text-xs text-slate-400">/{ACHIEVEMENTS.length}</span>
+            </div>
+            <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">బ్యాడ్జ్ లు</div>
+          </div>
+          <ChevronRight className="w-4 h-4 text-emerald-700 group-hover:translate-x-0.5 transition-transform" />
+        </div>
       </button>
     </div>
   );
