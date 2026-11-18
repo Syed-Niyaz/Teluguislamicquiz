@@ -5,6 +5,7 @@ import RegistrationScreen from './components/RegistrationScreen';
 import QuizScreen from './components/QuizScreen';
 import ResultScreen from './components/ResultScreen';
 import Leaderboard from './components/Leaderboard';
+import AdminDetails from './components/AdminDetails';
 import PreviousQuizzesScreen from './components/PreviousQuizzesScreen';
 import GoogleSheetModal from './components/GoogleSheetModal';
 import { getQuizForDate, getQuizByKey, toDateKey } from './data/dailyQuizzes';
@@ -109,6 +110,7 @@ export default function App() {
         onGoHome={() => setScreen('intro')}
         onOpenPrevious={() => setScreen('previous')}
         onOpenLeaderboard={() => handleOpenLeaderboard(selectedQuizDate || toDateKey())}
+        onOpenAdminDetails={() => setScreen('adminDetails')}
         onOpenSettings={() => {}}
       />
 
@@ -172,8 +174,35 @@ export default function App() {
                     {selectedQuiz.label}
                   </span>
                 )}
+                <button
+                  onClick={() => setScreen('adminDetails')}
+                  className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-2xl border border-sky-200 bg-sky-50 text-sky-900 hover:bg-sky-100 text-sm font-semibold transition cursor-pointer"
+                >
+                  పూర్తి వివరాలు <span className="hidden sm:inline">(Admin)</span> →
+                </button>
               </div>
               <Leaderboard quizDate={selectedQuizDate} />
+            </div>
+          )}
+
+          {screen === 'adminDetails' && (
+            <div className="w-full max-w-5xl mx-auto animate-fade-in">
+              <div className="mb-4 flex flex-wrap items-center gap-2">
+                <button
+                  onClick={() => setScreen('intro')}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl border border-emerald-200 bg-white/90 text-emerald-950 hover:bg-emerald-50 text-sm font-semibold transition cursor-pointer shadow-sm hover:shadow"
+                >
+                  <span>← హోమ్</span>
+                  <span className="text-emerald-700/70 hidden sm:inline">(Home)</span>
+                </button>
+                <button
+                  onClick={() => setScreen('leaderboard')}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl border border-emerald-200 bg-white/90 text-emerald-950 hover:bg-emerald-50 text-sm font-semibold transition cursor-pointer shadow-sm hover:shadow"
+                >
+                  ← లీడర్ బోర్డ్
+                </button>
+              </div>
+              <AdminDetails />
             </div>
           )}
         </div>
