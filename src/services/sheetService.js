@@ -82,6 +82,46 @@ export const saveScriptUrl = (url) => {
   }
 };
 
+const STORAGE_KEY_USER_PROFILE = 'islamic_quiz_user_profile';
+
+export const getSavedUserProfile = () => {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY_USER_PROFILE);
+    const p = raw ? JSON.parse(raw) : null;
+    if (!p || typeof p !== 'object') return null;
+    const name = String(p.name || '').trim();
+    const location = String(p.location || '').trim();
+    const occupation = String(p.occupation || '').trim();
+    if (!name || !location || !occupation) return null;
+    return { name, location, occupation };
+  } catch {
+    return null;
+  }
+};
+
+export const saveUserProfile = (profile) => {
+  try {
+    const clean = {
+      name: String(profile?.name || '').trim(),
+      location: String(profile?.location || '').trim(),
+      occupation: String(profile?.occupation || '').trim()
+    };
+    if (clean.name && clean.location && clean.occupation) {
+      localStorage.setItem(STORAGE_KEY_USER_PROFILE, JSON.stringify(clean));
+    }
+  } catch {
+    // ignore storage errors
+  }
+};
+
+export const clearUserProfile = () => {
+  try {
+    localStorage.removeItem(STORAGE_KEY_USER_PROFILE);
+  } catch {
+    // ignore storage errors
+  }
+};
+
 export const getLocalResults = (quizDate) => {
   try {
     const raw = localStorage.getItem(STORAGE_KEY_LOCAL_RESULTS);

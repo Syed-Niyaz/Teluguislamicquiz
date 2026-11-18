@@ -11,13 +11,14 @@ import GoogleSheetModal from './components/GoogleSheetModal';
 import BadgeToast from './components/BadgeToast';
 import { syncAchievements } from './services/achievementService';
 import { getQuizForDate, getQuizByKey, toDateKey } from './data/dailyQuizzes';
-import { submitQuizToGoogleSheets } from './services/sheetService';
+import { submitQuizToGoogleSheets, getSavedUserProfile, saveUserProfile } from './services/sheetService';
 
 export default function App() {
   const [screen, setScreen] = useState('intro'); // 'intro' | 'previous' | 'registration' | 'quiz' | 'result' | 'leaderboard' (admin full-details view)
   const [selectedQuizDate, setSelectedQuizDate] = useState(toDateKey());
   const [selectedQuiz, setSelectedQuiz] = useState(getQuizForDate(toDateKey()));
-  const [userData, setUserData] = useState({
+  const [savedProfile, setSavedProfile] = useState(() => getSavedUserProfile());
+  const [userData, setUserData] = useState(() => getSavedUserProfile() || {
     name: '',
     location: '',
     occupation: ''
@@ -26,8 +27,9 @@ export default function App() {
   const [sheetStatus, setSheetStatus] = useState(null);
   const [isSheetModalOpen, setIsSheetModalOpen] = useState(false);
   const [badgeToast, setBadgeToast] = useState(null);
+  const [startQuizAfterRegister, setStartQuizAfterRegister] = useState(false);
 
-  // Select a quiz and start (daily today: registration, past/weekly: play directly)
+  // Select a quiz and start (daily today: use saved details or register, past: practice, weekly: use saved details if available)
   const handleStartQuizForDate = (quizOrKey) => {
     const quiz = typeof quizOrKey === 'string' ? getQuizByKey(quizOrKey) : quizOrKey;
     if (!quiz || quiz.isUpcoming) return;
@@ -36,12 +38,37 @@ export default function App() {
     setSelectedQuiz(quiz);
     setResultData(null);
     setSheetStatus(null);
-    if (quiz.type !== 'weekly' && key === toDateKey()) {
-      setScreen('registration');
-    } else {
-      setUserData({ name: '', location: '', occupation: '' });
+
+    const saved = getSavedUserProfile();
+
+    if (quiz.type === 'weekly') {
+      setUserData(saved || { name: '', location: '', occupation: '' });
       setScreen('quiz');
+      return;
     }
+
+    if (key === toDateKey()) {
+      if (saved) {
+        setUserData(saved);
+        setScreen('quiz');
+      } else {
+        setStartQuizAfterRegister(true);
+        setScreen('registration');
+      }
+      return;
+    }
+
+    // Past daily quizzes are practice only (no registration, no sheet sync)
+    setUserData({ name: '', location: '', occupation: '' });
+    setScreen('quiz');
+  };
+
+  const handleEditProfile = () => {
+    const today = getQuizForDate(toDateKey());
+    setSelectedQuizDate(today?.date || toDateKey());
+    setSelectedQuiz(today);
+    setStartQuizAfterRegister(false);
+    setScreen('registration');
   };
 
   const handleOpenLeaderboard = (dateKey) => {
@@ -53,8 +80,14 @@ export default function App() {
 
   // Completed the 3 user details (Name, Where from, Occupation)
   const handleCompleteRegistration = (data) => {
+    saveUserProfile(data);
+    setSavedProfile(data);
     setUserData(data);
-    setScreen('quiz');
+    if (startQuizAfterRegister) {
+      setScreen('quiz');
+    } else {
+      setScreen('intro');
+    }
   };
 
   // Completed or submitted the quiz
@@ -142,6 +175,8 @@ export default function App() {
               onStartQuiz={handleStartQuizForDate}
               onOpenLeaderboard={handleOpenLeaderboard}
               onOpenProgress={() => setScreen('progress')}
+              onEditProfile={handleEditProfile}
+              savedUser={savedProfile}
             />
           )}
 
@@ -154,7 +189,7 @@ export default function App() {
 
           {screen === 'registration' && (
             <RegistrationScreen
-              initialData={userData}
+              initialData={savedProfile || userData}
               selectedQuiz={selectedQuiz}
               onBack={() => setScreen('intro')}
               onCompleteRegistration={handleCompleteRegistration}
