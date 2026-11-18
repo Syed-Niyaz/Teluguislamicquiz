@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { BookOpen, Menu, History, Settings, Trophy, MessageCircle } from 'lucide-react';
+import { BookOpen, Menu, History, Settings, Trophy, MessageCircle, TrendingUp } from 'lucide-react';
 import { WHATSAPP_CHANNEL_URL } from '../data/links';
 
-export default function Header({ onGoHome, onOpenPrevious, onOpenLeaderboard, onOpenSettings }) {
+export default function Header({ onGoHome, onOpenPrevious, onOpenLeaderboard, onOpenProgress, onOpenSettings }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
 
@@ -67,6 +67,14 @@ export default function Header({ onGoHome, onOpenPrevious, onOpenLeaderboard, on
               >
                 <History className="w-4 h-4 text-emerald-700" />
                 <span>మునుపటి క్విజ్‌లు</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => { setMenuOpen(false); onOpenProgress?.(); }}
+                className="w-full px-4 py-3 text-left text-sm font-semibold text-emerald-950 hover:bg-emerald-50 flex items-center gap-2.5 border-t border-emerald-50 cursor-pointer"
+              >
+                <TrendingUp className="w-4 h-4 text-sky-700" />
+                <span>మీ ప్రోగ్రెస్</span>
               </button>
               <button
                 type="button"

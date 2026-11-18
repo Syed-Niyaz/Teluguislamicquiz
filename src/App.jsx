@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import IntroScreen from './components/IntroScreen';
+import ProgressScreen from './components/ProgressScreen';
 import RegistrationScreen from './components/RegistrationScreen';
 import QuizScreen from './components/QuizScreen';
 import ResultScreen from './components/ResultScreen';
@@ -109,6 +110,7 @@ export default function App() {
         onGoHome={() => setScreen('intro')}
         onOpenPrevious={() => setScreen('previous')}
         onOpenLeaderboard={() => handleOpenLeaderboard(selectedQuizDate || toDateKey())}
+        onOpenProgress={() => setScreen('progress')}
         onOpenSettings={() => {}}
       />
 
@@ -119,6 +121,7 @@ export default function App() {
             <IntroScreen
               onStartQuiz={handleStartQuizForDate}
               onOpenLeaderboard={handleOpenLeaderboard}
+              onOpenProgress={() => setScreen('progress')}
             />
           )}
 
@@ -155,6 +158,21 @@ export default function App() {
               quizInfo={selectedQuiz}
               sheetStatus={sheetStatus}
             />
+          )}
+
+          {screen === 'progress' && (
+            <div className="w-full max-w-4xl mx-auto animate-fade-in">
+              <div className="mb-4 flex flex-wrap items-center gap-2">
+                <button
+                  onClick={() => setScreen('intro')}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl border border-emerald-200 bg-white/90 text-emerald-950 hover:bg-emerald-50 text-sm font-semibold transition cursor-pointer shadow-sm hover:shadow"
+                >
+                  <span>← హోమ్</span>
+                  <span className="text-emerald-700/70 hidden sm:inline">(Home)</span>
+                </button>
+              </div>
+              <ProgressScreen onStartQuiz={handleStartQuizForDate} />
+            </div>
           )}
 
           {screen === 'leaderboard' && (

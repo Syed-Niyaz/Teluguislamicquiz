@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
-import { ArrowRight, Award, CalendarDays, Lock, PlayCircle, Trophy, Clock } from 'lucide-react';
+import { ArrowRight, Award, CalendarDays, Lock, PlayCircle, Trophy, Clock, TrendingUp, ChevronRight } from 'lucide-react';
 import { getDailyQuizSchedule, getWeeklyTopQuiz, toDateKey } from '../data/dailyQuizzes';
 
-export default function IntroScreen({ onStartQuiz, onOpenLeaderboard }) {
+export default function IntroScreen({ onStartQuiz, onOpenLeaderboard, onOpenProgress }) {
   const schedule = useMemo(() => getDailyQuizSchedule(10, 0), []);
   const weeklyQuiz = useMemo(() => getWeeklyTopQuiz(new Date()), []);
   const todayKey = toDateKey();
@@ -77,6 +77,24 @@ export default function IntroScreen({ onStartQuiz, onOpenLeaderboard }) {
           </div>
         </div>
       </div>
+
+      {/* Player progress & badges */}
+      <button
+        type="button"
+        onClick={onOpenProgress}
+        className="w-full rounded-3xl border border-sky-200 bg-gradient-to-r from-sky-50 via-white to-emerald-50 p-4 sm:p-5 flex items-center gap-3 sm:gap-4 text-left shadow-sm hover:shadow-md transition cursor-pointer"
+      >
+        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-sky-500 to-emerald-700 text-white flex items-center justify-center shadow-md shrink-0">
+          <TrendingUp className="w-6 h-6 sm:w-7 sm:h-7" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="text-base sm:text-lg font-extrabold text-emerald-950">మీ ప్రోగ్రెస్ & బ్యాడ్జ్ లు</div>
+          <p className="text-xs sm:text-sm text-emerald-800/80 mt-0.5 font-medium">
+            మీ పేరు, రోజువారీ పాల్గొన్న దినాలు, అభినందనలు మరియు అందమైన బ్యాడ్జ్ లు చూడండి.
+          </p>
+        </div>
+        <ChevronRight className="w-6 h-6 text-sky-700 shrink-0" />
+      </button>
     </div>
   );
 }
