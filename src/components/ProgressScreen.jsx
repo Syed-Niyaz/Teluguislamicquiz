@@ -230,14 +230,9 @@ export default function ProgressScreen({ onStartQuiz }) {
     <div className="w-full max-w-6xl mx-auto pb-6 sm:pb-10 animate-fade-in space-y-6 sm:space-y-8">
       {/* Page heading */}
       <div className="flex flex-wrap items-end justify-between gap-3 px-1">
-        <div>
-          <p className="text-[10px] font-bold tracking-[0.22em] text-teal-700 uppercase">
-            అచీవ్మెంట్స్ · ఇల్మ్ యాత్ర
-          </p>
-          <h1 className="mt-1 text-2xl sm:text-3xl font-extrabold text-emerald-950 tracking-tight">
-            మీ ప్రోగ్రెస్
-          </h1>
-        </div>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-emerald-950 tracking-tight">
+          మీ ప్రోగ్రెస్
+        </h1>
         <p className="font-arabic text-2xl text-teal-800/70" dir="rtl">
           رَّبِّ زِدْنِي عِلْمًا
         </p>
