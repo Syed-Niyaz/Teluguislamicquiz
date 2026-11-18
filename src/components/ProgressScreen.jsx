@@ -21,7 +21,6 @@ import {
   CalendarCheck
 } from 'lucide-react';
 import { formatDateLabel, toDateKey } from '../data/dailyQuizzes';
-import { getBadgeIcon } from '../data/badgeIcons';
 import {
   ACHIEVEMENTS,
   getAchievementSnapshot,
@@ -29,6 +28,7 @@ import {
   badgeProgress,
   formatUnlockDate
 } from '../services/achievementService';
+import { getBadgeIcon } from '../data/badgeIcons';
 import BadgeToast from './BadgeToast';
 
 const ICONS = {
@@ -44,7 +44,6 @@ const ICONS = {
   certificate: ScrollText
 };
 
-// Unlocked badges are always emerald / teal green.
 const TONES = {
   niyyat: 'text-emerald-700 bg-emerald-50 ring-emerald-200',
   talib: 'text-teal-700 bg-teal-50 ring-teal-200',
@@ -58,11 +57,9 @@ const TONES = {
   nurul: 'text-emerald-800 bg-emerald-50 ring-emerald-300'
 };
 
-// Locked badges: muted blue-grey.
 const LOCKED_MEDALLION = 'bg-[#eaf0f5] text-[#8a9daf] ring-[#d6e1ea]';
-const LOCKED_CARD = 'border-[#dbe5ee] bg-[#f5f9fb] hover:border-[#c7d8e6]';
+const LOCKED_CARD = 'border-[#dbe5ee] bg-[#f7fafd] hover:bg-[#f3f8fc]';
 
-// Small accents: soft gold, sky blue, light pink.
 const TIER_CHIP = {
   bronze: 'text-[#9a7427] bg-[#fdf8ec] ring-[#f0e2be]',
   silver: 'text-[#6c8398] bg-[#eef2f6] ring-[#d7e0e8]',
@@ -80,14 +77,12 @@ const EMPTY_APPRECIATION =
 function BadgeMedallion({ badge, unlocked, size = 'md' }) {
   const Icon = ICONS[badge.iconKey] || Award;
   const iconUrl = getBadgeIcon(badge);
-  const dimension = size === 'lg' ? 'w-16 h-16 rounded-[20px]' : 'w-12 h-12 rounded-2xl';
-  const iconSize = size === 'lg' ? 'w-8 h-8' : 'w-6 h-6';
+  const dimension = size === 'lg' ? 'w-20 h-20 rounded-[22px]' : 'w-14 h-14 rounded-2xl';
+  const iconSize = size === 'lg' ? 'w-10 h-10' : 'w-7 h-7';
   return (
     <div
       className={`${dimension} shrink-0 ring-2 flex items-center justify-center transition-all duration-300 ${
-        unlocked
-          ? `${TONES[badge.id]}`
-          : `${LOCKED_MEDALLION}`
+        unlocked ? `${TONES[badge.id]}` : `${LOCKED_MEDALLION}`
       }`}
     >
       {iconUrl ? (
@@ -101,9 +96,7 @@ function BadgeMedallion({ badge, unlocked, size = 'md' }) {
         />
       ) : (
         <Icon
-          className={`${size === 'lg' ? 'w-7 h-7' : 'w-5 h-5'} ${
-            unlocked ? '' : 'blur-[1px]'
-          }`}
+          className={`${size === 'lg' ? 'w-8 h-8' : 'w-6 h-6'} ${unlocked ? '' : 'blur-[1px]'}`}
           strokeWidth={1.7}
         />
       )}
@@ -113,14 +106,16 @@ function BadgeMedallion({ badge, unlocked, size = 'md' }) {
 
 function BadgeDetailModal({ badge, unlocked, unlockedDate, progress, onClose }) {
   useEffect(() => {
-    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    const onKey = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
   }, [onClose]);
 
   return (
     <div
-      className="fixed inset-0 z-[80] bg-teal-950/25 backdrop-blur-[2px] flex items-center justify-center p-4 animate-fade-in"
+      className="fixed inset-0 z-[80] bg-teal-950/25 backdrop-blur-[2px] flex items-center justify-center p-4 sm:p-6 animate-fade-in"
       onClick={onClose}
       role="presentation"
     >
@@ -129,32 +124,37 @@ function BadgeDetailModal({ badge, unlocked, unlockedDate, progress, onClose }) 
         aria-modal="true"
         aria-label={badge.title}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-sm rounded-3xl bg-white border border-emerald-200/80 shadow-2xl overflow-hidden"
+        className="w-full max-w-sm rounded-3xl bg-white border border-emerald-200/80 shadow-xl overflow-hidden"
       >
         <div
-          className="h-1"
+          className="h-1.5"
           style={{ background: 'linear-gradient(90deg, #0f766e 0%, #d4af63 34%, #5aa9d6 67%, #e8a8b8 100%)' }}
         />
-        <div className="p-6 text-center">
+        <div className="p-6 sm:p-7 text-center relative">
           <button
             type="button"
             onClick={onClose}
-            className="float-right w-8 h-8 rounded-xl text-slate-400 hover:bg-slate-100 hover:text-slate-700 flex items-center justify-center cursor-pointer"
+            className="absolute top-4 right-4 w-9 h-9 rounded-xl text-slate-400 hover:bg-slate-100 hover:text-slate-700 flex items-center justify-center cursor-pointer transition"
             aria-label="Close"
           >
             <X className="w-4 h-4" />
           </button>
-          <div className="flex justify-center">
+
+          <div className="flex justify-center pt-1">
             <BadgeMedallion badge={badge} unlocked={unlocked} size="lg" />
           </div>
-          <span className={`inline-block mt-4 text-[10px] font-bold px-2.5 py-1 rounded-full ring-1 ${TIER_CHIP[badge.tier]}`}>
+
+          <span
+            className={`inline-block mt-4 text-[10px] font-bold px-3 py-1 rounded-full ring-1 ${TIER_CHIP[badge.tier]}`}
+          >
             {badge.tierLabel}
           </span>
-          <h3 className="mt-2 text-xl font-extrabold text-emerald-950">{badge.title}</h3>
-          <p className="mt-2 text-sm text-slate-600 font-medium">{badge.requirement}</p>
+
+          <h3 className="mt-3 text-xl font-extrabold text-emerald-950">{badge.title}</h3>
+          <p className="mt-2 text-sm text-slate-600 font-medium leading-relaxed">{badge.requirement}</p>
 
           {unlocked ? (
-            <div className="mt-5 rounded-2xl border border-emerald-100 bg-emerald-50/50 p-3.5">
+            <div className="mt-5 rounded-2xl border border-emerald-100 bg-emerald-50/50 p-4">
               <div className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800">
                 <Check className="w-4 h-4" /> అన్ లాక్ అయ్యింది
               </div>
@@ -163,12 +163,12 @@ function BadgeDetailModal({ badge, unlocked, unlockedDate, progress, onClose }) 
               </div>
             </div>
           ) : (
-            <div className="mt-5 rounded-2xl border border-[#d6e1ea] bg-[#f5f9fb] p-3.5">
+            <div className="mt-5 rounded-2xl border border-[#d6e1ea] bg-[#f5f9fb] p-4">
               <div className="flex items-center justify-between text-xs font-bold text-[#6c8398]">
                 <span>పురోగతి</span>
                 <span>{progress.current} / {progress.target}</span>
               </div>
-              <div className="mt-2 h-2 rounded-full bg-[#e2eaf1] overflow-hidden">
+              <div className="mt-2.5 h-2 rounded-full bg-[#e2eaf1] overflow-hidden">
                 <div
                   className="h-full rounded-full bg-[#9db1c2] transition-all duration-500"
                   style={{ width: `${progress.percent}%` }}
@@ -183,7 +183,7 @@ function BadgeDetailModal({ badge, unlocked, unlockedDate, progress, onClose }) 
           <button
             type="button"
             onClick={onClose}
-            className="mt-5 w-full py-2.5 rounded-xl border border-emerald-200 text-emerald-900 hover:bg-emerald-50 font-bold text-sm cursor-pointer transition"
+            className="mt-6 w-full py-2.5 rounded-xl border border-emerald-200 text-emerald-900 hover:bg-emerald-50 font-bold text-sm cursor-pointer transition"
           >
             మూసివేయండి
           </button>
@@ -226,72 +226,84 @@ export default function ProgressScreen({ onStartQuiz }) {
   const initials = name.trim().charAt(0).toUpperCase() || 'అ';
 
   return (
-    <div className="w-full max-w-6xl mx-auto pb-4 animate-fade-in">
+    <div className="w-full max-w-6xl mx-auto pb-6 sm:pb-10 animate-fade-in space-y-6 sm:space-y-8">
       {/* Page heading */}
-      <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+      <div className="flex flex-wrap items-end justify-between gap-3 px-1">
         <div>
-          <p className="text-[10px] font-bold tracking-[0.2em] text-amber-800 uppercase">
+          <p className="text-[10px] font-bold tracking-[0.22em] text-teal-700 uppercase">
             అచీవ్మెంట్స్ · ఇల్మ్ యాత్ర
           </p>
-          <h1 className="mt-1 text-2xl sm:text-3xl font-extrabold text-emerald-950">
+          <h1 className="mt-1 text-2xl sm:text-3xl font-extrabold text-emerald-950 tracking-tight">
             మీ ప్రోగ్రెస్
           </h1>
         </div>
-        <p className="font-arabic text-2xl text-amber-800/80" dir="rtl">رَّبِّ زِدْنِي عِلْمًا</p>
+        <p className="font-arabic text-2xl text-teal-800/70" dir="rtl">
+          رَّبِّ زِدْنِي عِلْمًا
+        </p>
       </div>
 
-      {/* Profile card */}
+      {/* Profile */}
       <section className="card-surface rounded-[28px] overflow-hidden">
         <div
-          className="h-1"
+          className="h-1.5"
           style={{ background: 'linear-gradient(90deg, #0f766e 0%, #d4af63 32%, #5aa9d6 66%, #e8a8b8 100%)' }}
         />
-        <div className="p-5 sm:p-7 flex flex-wrap items-center gap-5">
-          <div className="w-14 h-14 rounded-2xl bg-teal-700 text-white ring-4 ring-teal-50 flex items-center justify-center text-xl font-extrabold shadow-sm shrink-0">
-            {initials}
-          </div>
-          <div className="min-w-0 flex-1">
-            <div className="text-[11px] font-bold text-teal-700 tracking-wide">
-              అల్లాహ్ రహ్మత్ తో
+        <div className="p-5 sm:p-7 lg:p-8">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-6">
+            <div className="flex items-center gap-4 min-w-0 flex-1">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-teal-700 text-white ring-4 ring-teal-50 flex items-center justify-center text-xl sm:text-2xl font-extrabold shadow-sm shrink-0">
+                {initials}
+              </div>
+              <div className="min-w-0">
+                <div className="text-[11px] font-bold text-teal-700 tracking-wide">అల్లాహ్ రహ్మత్ తో</div>
+                <h2 className="truncate text-xl sm:text-2xl font-extrabold text-emerald-950">{name}</h2>
+                <p className="mt-0.5 text-xs sm:text-sm text-slate-600 font-medium">
+                  ఇల్మ్ కోసం చేసే ప్రయత్నానికి బరకత్ ఉంది, ఇన్ షా అల్లాహ్.
+                </p>
+              </div>
             </div>
-            <h2 className="truncate text-xl sm:text-2xl font-extrabold text-emerald-950">{name}</h2>
-            <p className="mt-0.5 text-xs sm:text-sm text-slate-600 font-medium">
-              ఇల్మ్ కోసం చేసే ప్రయత్నానికి బరకత్ ఉంది, ఇన్ షా అల్లాహ్.
+
+            <div className="flex items-center justify-between sm:justify-end gap-4 sm:gap-6 pt-1 sm:pt-0">
+              <div className="sm:hidden text-xs font-semibold text-slate-500">
+                {unlockedCount} / {ACHIEVEMENTS.length} బ్యాడ్జ్‌లు అన్‌లాక్
+              </div>
+              <div
+                className="relative w-[84px] h-[84px] rounded-full shrink-0"
+                style={{
+                  background: `conic-gradient(#0f766e ${(unlockedCount / ACHIEVEMENTS.length) * 100}%, #e7f1ee 0)`
+                }}
+              >
+                <div className="absolute inset-[7px] rounded-full bg-white flex flex-col items-center justify-center shadow-inner">
+                  <span className="text-xl font-extrabold text-emerald-950 leading-none">{unlockedCount}</span>
+                  <span className="text-[9px] font-bold text-slate-400">/ {ACHIEVEMENTS.length}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6 rounded-2xl border border-emerald-100 bg-emerald-50/40 px-4 sm:px-5 py-4 flex items-start gap-3">
+            <Moon className="w-4 h-4 mt-0.5 text-teal-700 shrink-0" />
+            <p className="text-sm leading-relaxed text-emerald-950 font-medium">
+              {results.length ? APPRECIATION : EMPTY_APPRECIATION}
             </p>
           </div>
-          <div
-            className="relative w-[76px] h-[76px] rounded-full shrink-0"
-            style={{
-              background: `conic-gradient(#bfa15f ${(unlockedCount / ACHIEVEMENTS.length) * 100}%, #edf2ee 0)`
-            }}
-          >
-            <div className="absolute inset-[6px] rounded-full bg-white flex flex-col items-center justify-center shadow-inner">
-              <span className="text-lg font-extrabold text-emerald-950 leading-none">{unlockedCount}</span>
-              <span className="text-[9px] font-bold text-slate-400">/ {ACHIEVEMENTS.length} బ్యాడ్జ్</span>
-            </div>
-          </div>
-        </div>
-        <div className="border-t border-emerald-100 bg-emerald-50/40 px-5 sm:px-7 py-4 flex items-start gap-3">
-          <Moon className="w-4 h-4 mt-0.5 text-amber-700 shrink-0" />
-          <p className="text-xs sm:text-sm leading-relaxed text-emerald-950 font-medium">
-            {results.length ? APPRECIATION : EMPTY_APPRECIATION}
-          </p>
         </div>
       </section>
 
       {/* Stats */}
-      <div className="mt-5 grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {[
-          { icon: CalendarCheck, label: 'క్విజ్ లు', value: stats.quizzes, tone: 'text-emerald-700' },
-          { icon: TrendingUp, label: 'మొత్తం పాయింట్లు', value: stats.totalPoints, tone: 'text-[#b58b3a]' },
-          { icon: Target, label: 'ఉత్తమ శాతం', value: `${stats.bestAccuracy}%`, tone: 'text-[#4b9ac7]' },
-          { icon: Flame, label: 'గరిష్ట వరుస రోజులు', value: stats.maxStreak, tone: 'text-[#c2798e]' }
+          { icon: CalendarCheck, label: 'క్విజ్ లు', value: stats.quizzes, tone: 'text-emerald-700', bg: 'bg-emerald-50' },
+          { icon: TrendingUp, label: 'మొత్తం పాయింట్లు', value: stats.totalPoints, tone: 'text-[#b58b3a]', bg: 'bg-[#fdf8ec]' },
+          { icon: Target, label: 'ఉత్తమ శాతం', value: `${stats.bestAccuracy}%`, tone: 'text-[#4b9ac7]', bg: 'bg-[#eef7fc]' },
+          { icon: Flame, label: 'గరిష్ట వరుస రోజులు', value: stats.maxStreak, tone: 'text-[#c2798e]', bg: 'bg-[#fdf2f5]' }
         ].map((s) => (
-          <div key={s.label} className="card-surface rounded-2xl p-4">
-            <div className="flex items-center gap-2 text-[11px] font-bold text-slate-500">
-              <s.icon className={`w-3.5 h-3.5 ${s.tone}`} /> {s.label}
+          <div key={s.label} className="card-surface rounded-2xl p-4 sm:p-5">
+            <div className={`w-9 h-9 rounded-xl ${s.bg} ${s.tone} flex items-center justify-center mb-3`}>
+              <s.icon className="w-4 h-4" strokeWidth={2} />
             </div>
-            <div className="mt-1.5 text-2xl font-extrabold tracking-tight text-emerald-950 tabular-nums">
+            <div className="text-[11px] font-bold text-slate-500">{s.label}</div>
+            <div className="mt-1 text-2xl sm:text-3xl font-extrabold tracking-tight text-emerald-950 tabular-nums">
               {s.value}
             </div>
           </div>
@@ -300,26 +312,26 @@ export default function ProgressScreen({ onStartQuiz }) {
 
       {/* Next milestone */}
       {nextBadge && nextProgress && (
-        <div className="card-surface mt-5 rounded-2xl p-4 sm:p-5">
-          <div className="flex flex-wrap items-center gap-3">
+        <div className="card-surface rounded-2xl p-4 sm:p-6">
+          <div className="flex flex-wrap items-center gap-4">
             <BadgeMedallion badge={nextBadge} unlocked={false} />
             <div className="min-w-0 flex-1">
-              <div className="text-[10px] font-bold tracking-wider text-teal-700 uppercase">
-                తదుపరి మైలురాయి
+              <div className="text-[10px] font-bold tracking-wider text-teal-700 uppercase">తదుపరి మైలురాయి</div>
+              <div className="text-sm sm:text-base font-extrabold text-emerald-950 truncate mt-0.5">
+                {nextBadge.title}
               </div>
-              <div className="text-sm font-extrabold text-emerald-950 truncate">{nextBadge.title}</div>
-              <div className="text-[11px] text-slate-500 font-medium">{nextBadge.requirement}</div>
+              <div className="text-xs text-slate-500 font-medium mt-0.5">{nextBadge.requirement}</div>
             </div>
             <div className="text-right shrink-0">
-              <div className="text-sm font-extrabold text-emerald-900 tabular-nums">
+              <div className="text-base font-extrabold text-emerald-900 tabular-nums">
                 {nextProgress.current} / {nextProgress.target}
               </div>
               <div className="text-[10px] text-slate-400 font-semibold">పురోగతి</div>
             </div>
           </div>
-          <div className="mt-3 h-1.5 rounded-full bg-slate-100 overflow-hidden">
+          <div className="mt-4 h-2 rounded-full bg-slate-100 overflow-hidden">
             <div
-              className="h-full rounded-full bg-emerald-700 transition-all duration-500"
+              className="h-full rounded-full bg-teal-700 transition-all duration-500"
               style={{ width: `${nextProgress.percent}%` }}
             />
           </div>
@@ -327,8 +339,8 @@ export default function ProgressScreen({ onStartQuiz }) {
       )}
 
       {/* Badges */}
-      <section className="mt-8">
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+      <section className="space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 px-1">
           <div>
             <h2 className="text-lg sm:text-xl font-extrabold text-emerald-950 flex items-center gap-2">
               <Award className="w-5 h-5 text-teal-700" /> సాధనలు
@@ -337,7 +349,7 @@ export default function ProgressScreen({ onStartQuiz }) {
               {unlockedCount} అన్ లాక్ · {lockedCount} లాక్ అయ్యాయి
             </p>
           </div>
-          <div className="inline-flex rounded-full bg-emerald-50 p-1 ring-1 ring-emerald-100">
+          <div className="inline-flex rounded-full bg-white p-1 ring-1 ring-emerald-100 shadow-sm">
             {[
               ['all', 'అన్నీ'],
               ['unlocked', `అన్ లాక్ (${unlockedCount})`],
@@ -347,10 +359,10 @@ export default function ProgressScreen({ onStartQuiz }) {
                 key={key}
                 type="button"
                 onClick={() => setFilter(key)}
-                className={`px-3 py-1.5 rounded-full text-[11px] font-bold transition cursor-pointer ${
+                className={`px-3.5 py-1.5 rounded-full text-[11px] font-bold transition cursor-pointer ${
                   filter === key
-                    ? 'bg-white text-emerald-900 shadow-sm'
-                    : 'text-slate-500 hover:text-emerald-800'
+                    ? 'bg-teal-700 text-white shadow-sm'
+                    : 'text-slate-500 hover:text-teal-700'
                 }`}
               >
                 {label}
@@ -359,7 +371,7 @@ export default function ProgressScreen({ onStartQuiz }) {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
           {visibleBadges.map((badge) => {
             const isUnlocked = !!state.unlocked[badge.id];
             const progress = badgeProgress(badge, stats);
@@ -368,41 +380,50 @@ export default function ProgressScreen({ onStartQuiz }) {
                 type="button"
                 key={badge.id}
                 onClick={() => setSelected(badge)}
-                className={`relative min-h-[214px] rounded-2xl border p-4 text-left transition-all duration-200 cursor-pointer ${
+                className={`group relative rounded-2xl border p-4 sm:p-5 text-left transition-all duration-200 cursor-pointer ${
                   isUnlocked
-                    ? 'card-surface hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(15,118,110,0.10)]'
+                    ? 'card-surface hover:-translate-y-0.5 hover:shadow-[0_12px_28px_rgba(15,118,110,0.10)]'
                     : LOCKED_CARD
                 }`}
               >
-                {isUnlocked && (
-                  <span className="absolute inset-x-5 top-0 h-px bg-gradient-to-r from-transparent via-amber-400 to-transparent" />
-                )}
                 <div className="flex items-start justify-between gap-2">
                   <BadgeMedallion badge={badge} unlocked={isUnlocked} />
                   {isUnlocked ? (
-                    <span className="w-6 h-6 rounded-full bg-teal-700 text-white flex items-center justify-center shrink-0">
-                      <Check className="w-3 h-3" />
+                    <span className="w-7 h-7 rounded-full bg-teal-700 text-white flex items-center justify-center shrink-0 shadow-sm">
+                      <Check className="w-3.5 h-3.5" />
                     </span>
                   ) : (
-                    <span className="w-6 h-6 rounded-full bg-white border border-[#d6e1ea] text-[#8a9daf] flex items-center justify-center shrink-0">
-                      <Lock className="w-3 h-3" />
+                    <span className="w-7 h-7 rounded-full bg-white border border-[#d6e1ea] text-[#8a9daf] flex items-center justify-center shrink-0">
+                      <Lock className="w-3.5 h-3.5" />
                     </span>
                   )}
                 </div>
 
-                <span className={`mt-3 inline-block text-[9px] font-bold px-2 py-0.5 rounded-full ring-1 ${TIER_CHIP[badge.tier]}`}>
+                <span
+                  className={`mt-4 inline-block text-[9px] font-bold px-2.5 py-1 rounded-full ring-1 ${TIER_CHIP[badge.tier]}`}
+                >
                   {badge.tierLabel}
                 </span>
-                <div className={`mt-2 text-[13px] font-extrabold leading-snug ${isUnlocked ? 'text-emerald-950' : 'text-[#6c8398]'}`}>
+
+                <div
+                  className={`mt-2.5 text-sm font-extrabold leading-snug ${
+                    isUnlocked ? 'text-emerald-950' : 'text-[#6c8398]'
+                  }`}
+                >
                   {badge.title}
                 </div>
-                <p className={`mt-1 text-[11px] leading-snug font-medium min-h-[32px] ${isUnlocked ? 'text-slate-500' : 'text-[#8a9daf]'}`}>
+
+                <p
+                  className={`mt-1.5 text-[11px] leading-relaxed font-medium min-h-[34px] ${
+                    isUnlocked ? 'text-slate-500' : 'text-[#8a9daf]'
+                  }`}
+                >
                   {badge.requirement}
                 </p>
 
-                <div className="mt-3 border-t border-slate-100 pt-2.5">
+                <div className="mt-4 pt-3 border-t border-slate-100/80">
                   {isUnlocked ? (
-                    <div className="text-[10px] font-bold text-emerald-800">
+                    <div className="text-[11px] font-bold text-emerald-800">
                       📅 {formatUnlockDate(state.unlocked[badge.id])}
                     </div>
                   ) : (
@@ -413,7 +434,7 @@ export default function ProgressScreen({ onStartQuiz }) {
                           style={{ width: `${progress.percent}%` }}
                         />
                       </div>
-                      <div className="mt-1 text-[10px] font-semibold text-[#8a9daf] tabular-nums">
+                      <div className="mt-1.5 text-[10px] font-semibold text-[#8a9daf] tabular-nums">
                         {progress.current} / {progress.target}
                       </div>
                     </>
@@ -427,31 +448,34 @@ export default function ProgressScreen({ onStartQuiz }) {
 
       {/* Recent activity */}
       {results.length > 0 && (
-        <section className="card-surface mt-8 rounded-2xl p-4 sm:p-5">
+        <section className="card-surface rounded-2xl p-5 sm:p-6">
           <h2 className="text-sm sm:text-base font-extrabold text-emerald-950 flex items-center gap-2">
-            <CalendarCheck className="w-4 h-4 text-emerald-700" /> ఇటీవలి ఇల్మ్ యాత్ర
+            <CalendarCheck className="w-4 h-4 text-teal-700" /> ఇటీవలి ఇల్మ్ యాత్ర
           </h2>
-          <div className="mt-3 divide-y divide-emerald-50">
+          <div className="mt-4 divide-y divide-emerald-50">
             {results.slice(0, 5).map((item, idx) => {
               const acc = Math.min(
                 100,
                 Math.round(((Number(item.score) || 0) / (Number(item.total) || 10)) * 100)
               );
               return (
-                <div key={`${item.quizDate}-${item.submittedAt || idx}`} className="py-2.5 flex items-center justify-between gap-3">
+                <div
+                  key={`${item.quizDate}-${item.submittedAt || idx}`}
+                  className="py-3 sm:py-3.5 flex items-center justify-between gap-3"
+                >
                   <div className="min-w-0">
-                    <div className="text-xs font-bold text-emerald-950 truncate">
+                    <div className="text-sm font-bold text-emerald-950 truncate">
                       {item.quizDate?.startsWith('weekly-')
                         ? 'వీక్లీ టాప్ క్విజ్'
                         : formatDateLabel(item.quizDate)}
                     </div>
-                    <div className="text-[10px] text-slate-500 font-medium">
+                    <div className="text-[11px] text-slate-500 font-medium mt-0.5">
                       {item.timeTakenFormatted || '00:00'} · {item.location || '—'}
                     </div>
                   </div>
                   <div className="shrink-0 flex items-center gap-3">
                     <span className="text-[11px] font-bold text-slate-500 tabular-nums">{acc}%</span>
-                    <span className="rounded-lg bg-emerald-50 border border-emerald-100 px-2.5 py-1 text-xs font-extrabold text-emerald-900 tabular-nums">
+                    <span className="rounded-xl bg-teal-50 border border-teal-100 px-3 py-1.5 text-xs font-extrabold text-teal-900 tabular-nums">
                       {item.score} / {item.total || 10}
                     </span>
                   </div>
@@ -465,7 +489,7 @@ export default function ProgressScreen({ onStartQuiz }) {
       <button
         type="button"
         onClick={() => onStartQuiz?.(toDateKey())}
-        className="mt-6 w-full py-3 rounded-2xl bg-teal-700 hover:bg-teal-800 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-sm transition cursor-pointer"
+        className="w-full py-3.5 sm:py-4 rounded-2xl bg-teal-700 hover:bg-teal-800 text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-sm transition cursor-pointer"
       >
         <span>ఈరోజు ఇల్మ్ పెంచుకుని కొత్త బ్యాడ్జ్ గెలవండి</span>
         <ChevronRight className="w-4 h-4" />

@@ -15,8 +15,8 @@ export default function Header({ onGoHome, onOpenPrevious, onOpenLeaderboard, on
   }, []);
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-emerald-100/70 bg-white/85 backdrop-blur-xl">
-      <div className="mx-auto w-full max-w-6xl px-3 sm:px-6 lg:px-8 py-2.5 sm:py-4 flex items-center justify-between gap-2 sm:gap-3">
+    <header className="sticky top-0 z-40 w-full border-b border-emerald-100/60 bg-white/80 backdrop-blur-md">
+      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between gap-3">
         <button
           type="button"
           onClick={onGoHome}

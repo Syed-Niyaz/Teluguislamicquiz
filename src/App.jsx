@@ -136,7 +136,7 @@ export default function App() {
 
       {/* Main Content Areas based on current screen */}
       <main className="flex-1 w-full">
-        <div className="mx-auto w-full max-w-6xl px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
+        <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8 py-6 sm:py-10 lg:py-12">
           {screen === 'intro' && (
             <IntroScreen
               onStartQuiz={handleStartQuizForDate}
@@ -213,15 +213,15 @@ export default function App() {
       </main>
 
       {/* Peaceful Islamic Footer */}
-      <footer className="w-full border-t border-emerald-100/70 bg-white/50 backdrop-blur-sm">
-        <div className="mx-auto max-w-6xl px-4 py-5 sm:py-6 text-center text-xs sm:text-sm text-emerald-900/80">
-          <div className="flex items-center justify-center gap-2 mb-1.5 font-arabic text-amber-800 text-lg sm:text-xl">
+      <footer className="w-full border-t border-emerald-100/60 bg-white/40">
+        <div className="mx-auto max-w-6xl px-4 py-6 sm:py-8 text-center text-xs sm:text-sm text-emerald-900/80">
+          <div className="flex items-center justify-center gap-2 mb-2 font-arabic text-teal-800/80 text-lg sm:text-xl">
             <span>رَّبِّ زِدْنِي عِلْمًا</span>
           </div>
           <p className="text-emerald-800/80 font-medium mb-1">
             ఓ అల్లాహ్! నా జ్ఞానాన్ని వృద్ధి చేయుము
           </p>
-          <p className="font-medium text-emerald-950/60 leading-relaxed">
+          <p className="font-medium text-emerald-950/50 leading-relaxed">
             © ఇస్లామిక్ తెలుగు క్విజ్ • Daily & Weekly Quizzes • Leaderboard
           </p>
         </div>
