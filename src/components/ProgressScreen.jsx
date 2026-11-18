@@ -19,16 +19,16 @@ import { toDateKey, addDays, formatDateLabel } from '../data/dailyQuizzes';
 const BADGES = [
   {
     id: 'first',
-    title: 'తొలి అడుగు',
-    desc: 'మొదటి క్విజ్ ఆడినప్పుడు',
+    title: 'బిస్మిల్లాహ్ తొలి అడుగు',
+    desc: 'అల్లాహ్ పేరుతో మొదటి క్విజ్ ఆడినప్పుడు',
     icon: Sparkles,
     art: 'from-emerald-400 to-emerald-700',
     ring: 'border-emerald-300 bg-emerald-50'
   },
   {
     id: 'three',
-    title: 'మూడు రోజుల వీరుడు',
-    desc: '3 రోజులు వరకు పాల్గొన్నప్పుడు',
+    title: 'మూడు రోజుల ఓర్పు',
+    desc: '3 రోజులు ఓర్పుతో పాల్గొన్నప్పుడు',
     icon: Flame,
     art: 'from-orange-400 to-rose-600',
     ring: 'border-orange-300 bg-orange-50'
@@ -36,47 +36,47 @@ const BADGES = [
   {
     id: 'week',
     title: 'వారం పట్టుదల',
-    desc: '7 రోజులు పాల్గొన్నప్పుడు',
+    desc: '7 రోజులు నిజమైన పట్టుదలతో పాల్గొన్నప్పుడు',
     icon: CalendarCheck,
     art: 'from-sky-400 to-blue-700',
     ring: 'border-sky-300 bg-sky-50'
   },
   {
     id: 'ten',
-    title: 'పది రోజుల ఛాంపియన్',
-    desc: '10 రోజులు పాల్గొన్నప్పుడు',
+    title: 'పది రోజుల స్థిరత్వం',
+    desc: '10 రోజులు ఇల్మ్ కోసం కృషి చేసినప్పుడు',
     icon: Medal,
     art: 'from-violet-500 to-indigo-700',
     ring: 'border-violet-300 bg-violet-50'
   },
   {
     id: 'perfect',
-    title: 'పరిపూర్ణ విజయం',
-    desc: '100% స్కోర్ సాధించినప్పుడు',
+    title: 'పరిపూర్ణ ఫలితం',
+    desc: 'అల్లాహ్ బరకత్ తో 100% ఫలితం పొందినప్పుడు',
     icon: Trophy,
     art: 'from-amber-300 to-amber-600',
     ring: 'border-amber-300 bg-amber-50'
   },
   {
     id: 'scholar',
-    title: 'జ్ఞాన దీపం',
-    desc: 'సగటు శాతం 80% దాటినప్పుడు',
+    title: 'ఇల్మ్ దీపం',
+    desc: 'సగటు 80% దాటి ఇల్మ్ లో మెరుగుపడినప్పుడు',
     icon: Star,
     art: 'from-fuchsia-400 to-purple-700',
     ring: 'border-fuchsia-300 bg-fuchsia-50'
   },
   {
     id: 'speed',
-    title: 'మెరుపు ఆటగాడు',
-    desc: '60 సెకన్లలోపు పూర్తి చేసినప్పుడు',
+    title: 'సమయ బరకత్',
+    desc: 'సమయాన్ని సద్వినియోగం చేసి 60 సెకన్లలో పూర్తి చేసినప్పుడు',
     icon: Zap,
     art: 'from-rose-400 to-red-700',
     ring: 'border-rose-300 bg-rose-50'
   },
   {
     id: 'streak',
-    title: 'వరుస విజయాలు',
-    desc: '3 రోజులు వరుసగా ఆడినప్పుడు',
+    title: 'వరుస హాజరీ',
+    desc: '3 రోజులు వరుసగా ఇల్మ్ కోసం హాజరైనప్పుడు',
     icon: Award,
     art: 'from-teal-400 to-emerald-700',
     ring: 'border-teal-300 bg-teal-50'
@@ -128,16 +128,16 @@ export default function ProgressScreen({ onStartQuiz }) {
   const weekProgress = Math.min(dailyDates.length, 7);
 
   const appreciation = !results.length
-    ? 'ఇంకా క్విజ్ ఆడలేదు. ఈరోజు మొదటి అడుగు వేసి మీ ప్రయాణం మొదలుపెట్టండి!'
+    ? 'బిస్మిల్లాహిర్ రహ్మానిర్ రహీమ్ తో మొదటి అడుగు వేయండి. అల్లాహ్ మీకు తౌఫీక్ దాన్ చేయుగాక.'
     : streak >= 7
-    ? 'మీ 7 రోజుల పట్టుదల అద్భుతం! అల్హందులిల్లాహ్, మీరు నిజమైన ఛాంపియన్!'
+    ? 'అల్హందులిల్లాహ్! ఒక వారం పాటు ఓర్పుతో ఇల్మ్ వెతికారు. అల్లాహ్ మీ కృషిని కబూల్ చేయుగాక.'
     : hasPerfect
-    ? 'మాషా అల్లాహ్! పరిపూర్ణ స్కోర్ సాధించిన మీ జ్ఞానానికి సలామ్!'
+    ? 'మాషా అల్లాహ్! పరిపూర్ణ ఫలితం అల్లాహ్ బరకత్. ఆయనకే హమ్ద్, ఆయనకే శుక్రియం.'
     : averageAccuracy >= 90
-    ? 'అద్భుతం! మీ ఇస్లామిక్ జ్ఞానం చాలా బలంగా ఉంది — ఇలాగే కొనసాగండి!'
+    ? 'అల్హందులిల్లాహ్! మీ ఇల్మ్ ఎంతో వృద్ధి చెందింది. మరింత నేర్చుకుంటూ అల్లాహ్ ను సంతోషపెట్టండి.'
     : unlockedCount >= 4
-    ? 'జజాకల్లాహు ఖైర్! మీరు గొప్ప బ్యాడ్జ్ లు సంపాదించారు — మరిన్ని గెలవండి!'
-    : 'మంచి మొదలు! ప్రతిరోజూ కొంచెం నేర్చుకుంటూ ముందుకు సాగండి.';
+    ? 'జజాకల్లాహు ఖైర్! మీరు గొప్ప బహుమతులు పొందారు. అల్లాహ్ మీకు మరింత తౌఫీక్ ఇవ్వగాక.'
+    : 'అల్హందులిల్లాహ్! మంచి మొదలు. ప్రతి రోజు ఇల్మ్ పెంచుకుంటూ ముందుకు సాగండి, ఇన్ షా అల్లాహ్.';
 
   return (
     <div className="w-full max-w-4xl mx-auto space-y-5 sm:space-y-6 animate-fade-in">
@@ -154,7 +154,7 @@ export default function ProgressScreen({ onStartQuiz }) {
             </div>
             <h2 className="text-xl sm:text-3xl font-extrabold text-emerald-950 truncate">{name}</h2>
             <p className="text-xs sm:text-sm text-emerald-800/80 mt-1 font-medium">
-              ప్రతి రోజు క్విజ్ ఆడి బ్యాడ్జ్ లు గెలవండి!
+              ప్రతి రోజు ఇల్మ్ పెంచుకుంటూ బ్యాడ్జ్ లు గెలవండి!
             </p>
           </div>
           <div className="rounded-2xl bg-white border border-amber-200 px-4 py-2 text-center shadow-sm shrink-0">
@@ -206,7 +206,7 @@ export default function ProgressScreen({ onStartQuiz }) {
           />
         </div>
         <p className="text-[11px] sm:text-xs text-emerald-800/80 font-medium mt-2">
-          {weekProgress >= 7 ? 'లక్ష్యం పూర్తి! మీకు “వారం పట్టుదల” బ్యాడ్జ్ లభించింది 🎉' : '7 రోజులు పాల్గొంటే “వారం పట్టుదల” బ్యాడ్జ్ గెలవండి.'}
+          {weekProgress >= 7 ? 'అల్హందులిల్లాహ్! లక్ష్యం పూర్తి — “వారం పట్టుదల” బ్యాడ్జ్ మీ సొంతం.' : '7 రోజులు ఓర్పుతో పాల్గొంటే “వారం పట్టుదల” బ్యాడ్జ్ గెలవండి, ఇన్ షా అల్లాహ్.'}
         </p>
       </div>
 
@@ -296,7 +296,7 @@ export default function ProgressScreen({ onStartQuiz }) {
         onClick={() => onStartQuiz?.(toDateKey())}
         className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-700 to-emerald-800 hover:from-emerald-800 hover:to-emerald-900 text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-md transition cursor-pointer"
       >
-        <span>ఈరోజు క్విజ్ ఆడి కొత్త బ్యాడ్జ్ గెలవండి</span>
+        <span>ఈరోజు ఇల్మ్ పెంచుకుని కొత్త బ్యాడ్జ్ గెలవండి</span>
         <ChevronRight className="w-5 h-5" />
       </button>
     </div>

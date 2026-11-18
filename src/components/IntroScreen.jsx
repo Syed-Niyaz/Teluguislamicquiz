@@ -90,7 +90,7 @@ export default function IntroScreen({ onStartQuiz, onOpenLeaderboard, onOpenProg
         <div className="min-w-0 flex-1">
           <div className="text-base sm:text-lg font-extrabold text-emerald-950">మీ ప్రోగ్రెస్ & బ్యాడ్జ్ లు</div>
           <p className="text-xs sm:text-sm text-emerald-800/80 mt-0.5 font-medium">
-            మీ పేరు, రోజువారీ పాల్గొన్న దినాలు, అభినందనలు మరియు అందమైన బ్యాడ్జ్ లు చూడండి.
+            మీ పేరు, ఇల్మ్ ప్రయాణం, ఇస్లామిక్ అభినందనలు మరియు అందమైన బ్యాడ్జ్ లు చూడండి.
           </p>
         </div>
         <ChevronRight className="w-6 h-6 text-sky-700 shrink-0" />
