@@ -8,6 +8,8 @@ import ResultScreen from './components/ResultScreen';
 import AdminDetails from './components/AdminDetails';
 import PreviousQuizzesScreen from './components/PreviousQuizzesScreen';
 import GoogleSheetModal from './components/GoogleSheetModal';
+import BadgeToast from './components/BadgeToast';
+import { syncAchievements } from './services/achievementService';
 import { getQuizForDate, getQuizByKey, toDateKey } from './data/dailyQuizzes';
 import { submitQuizToGoogleSheets } from './services/sheetService';
 
@@ -23,6 +25,7 @@ export default function App() {
   const [resultData, setResultData] = useState(null);
   const [sheetStatus, setSheetStatus] = useState(null);
   const [isSheetModalOpen, setIsSheetModalOpen] = useState(false);
+  const [badgeToast, setBadgeToast] = useState(null);
 
   // Select a quiz and start (daily today: registration, past/weekly: play directly)
   const handleStartQuizForDate = (quizOrKey) => {
@@ -94,6 +97,17 @@ export default function App() {
         message: 'ఫలితాలు స్థానికంగా సేవ్ చేయబడ్డాయి.'
       });
     }
+
+    // Achievements are real: recalculate after every scored submission and
+    // notify only for badges that were earned for the first time.
+    try {
+      const achievements = syncAchievements(payload.name);
+      if (achievements.newlyUnlocked.length) {
+        setBadgeToast(achievements.newlyUnlocked);
+      }
+    } catch (err) {
+      console.warn('Achievement sync skipped:', err);
+    }
   };
 
   // Reset scroll to top on every page/screen change
@@ -102,6 +116,12 @@ export default function App() {
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
   }, [screen, selectedQuizDate]);
+
+  useEffect(() => {
+    if (!badgeToast) return undefined;
+    const timer = setTimeout(() => setBadgeToast(null), 5000);
+    return () => clearTimeout(timer);
+  }, [badgeToast]);
 
   return (
     <div className="min-h-screen flex flex-col selection:bg-emerald-200 selection:text-emerald-900">
@@ -206,6 +226,9 @@ export default function App() {
           </p>
         </div>
       </footer>
+
+      {/* New achievement notification */}
+      <BadgeToast badges={badgeToast} onClose={() => setBadgeToast(null)} />
 
       {/* Google Sheets Connection Modal */}
       {isSheetModalOpen && (
