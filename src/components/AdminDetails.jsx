@@ -19,7 +19,7 @@ import {
   FileText
 } from 'lucide-react';
 import { fetchLeaderboard, ADMIN_PASSWORD } from '../services/sheetService';
-import { formatDateLabel, toDateKey } from '../data/dailyQuizzes';
+import { formatDateLabel, toDateKey, addDays } from '../data/dailyQuizzes';
 
 const AUTH_KEY = 'islamic_quiz_admin_authed';
 
@@ -31,7 +31,7 @@ const readAuth = () => {
   }
 };
 
-// Live sheet rows may be missing total/percentage (older script deployments),
+// Live sheet rows can be missing total/percentage (older script deployments),
 // so accuracy is always calculated here from score / total.
 const accuracyOf = (item) => {
   const total = Number(item.total) || 10;
@@ -62,11 +62,12 @@ const byRank = (a, b) => {
 
 export default function AdminDetails() {
   const today = toDateKey();
+  const yesterday = addDays(today, -1);
   const [authed, setAuthed] = useState(readAuth);
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [authError, setAuthError] = useState('');
-  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedDate, setSelectedDate] = useState(today);
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false);
   const [meta, setMeta] = useState({ source: '', error: '' });
@@ -74,8 +75,8 @@ export default function AdminDetails() {
   const loadData = async () => {
     setLoading(true);
     try {
-      // Fetch everything, then group/filter locally so all dates are available.
-      const res = await fetchLeaderboard('', ADMIN_PASSWORD);
+      // Only the selected date's results are fetched and displayed.
+      const res = await fetchLeaderboard(selectedDate, ADMIN_PASSWORD);
       setRows(res.items || []);
       setMeta({ source: res.source, error: res.error || '' });
     } catch (err) {
@@ -89,7 +90,7 @@ export default function AdminDetails() {
   useEffect(() => {
     if (authed) loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [authed]);
+  }, [authed, selectedDate]);
 
   const handleUnlock = (e) => {
     e.preventDefault();
@@ -178,53 +179,42 @@ export default function AdminDetails() {
     );
   }
 
-  // ----- Admin-only complete details -----
-  const visibleRows = selectedDate ? rows.filter((r) => r.quizDate === selectedDate) : rows;
-  const playerCount = visibleRows.length;
+  // ----- Admin-only details for the selected date -----
+  const playerCount = rows.length;
+  const sortedRows = [...rows].sort(byRank);
   const averageScore = playerCount
-    ? (visibleRows.reduce((sum, item) => sum + (Number(item.score) || 0), 0) / playerCount).toFixed(1)
+    ? (rows.reduce((sum, item) => sum + (Number(item.score) || 0), 0) / playerCount).toFixed(1)
     : '0';
   const averageAccuracy = playerCount
-    ? Math.round(visibleRows.reduce((sum, item) => sum + accuracyOf(item), 0) / playerCount)
+    ? Math.round(rows.reduce((sum, item) => sum + accuracyOf(item), 0) / playerCount)
     : 0;
-  const times = visibleRows.map((item) => Number(item.timeTakenSeconds) || 0).filter((s) => s > 0);
+  const times = rows.map((item) => Number(item.timeTakenSeconds) || 0).filter((s) => s > 0);
   const fastestTime = times.length ? Math.min(...times) : null;
-  const topPlayer = [...visibleRows].sort(byRank)[0];
-
-  const groups = visibleRows.reduce((acc, item) => {
-    const key = item.quizDate || 'unknown';
-    if (!acc[key]) acc[key] = [];
-    acc[key].push(item);
-    return acc;
-  }, {});
-  const dateKeys = Object.keys(groups).sort((a, b) => b.localeCompare(a));
-  dateKeys.forEach((key) => groups[key].sort(byRank));
+  const topPlayer = sortedRows[0];
 
   const handleExportCsv = () => {
     const lines = [
       ['Date', 'Rank', 'Name', 'Location', 'Occupation', 'Score', 'Total', 'Accuracy', 'Time Taken', 'Submitted At'].join(',')
     ];
-    dateKeys.forEach((key) => {
-      groups[key].forEach((item, idx) => {
-        lines.push([
-          key,
-          idx + 1,
-          item.name,
-          item.location,
-          item.occupation,
-          item.score,
-          item.total || 10,
-          `${accuracyOf(item)}%`,
-          item.timeTakenFormatted || '',
-          item.submittedAt || item.date || ''
-        ].map(csvCell).join(','));
-      });
+    sortedRows.forEach((item, idx) => {
+      lines.push([
+        selectedDate,
+        idx + 1,
+        item.name,
+        item.location,
+        item.occupation,
+        item.score,
+        item.total || 10,
+        `${accuracyOf(item)}%`,
+        item.timeTakenFormatted || '',
+        item.submittedAt || item.date || ''
+      ].map(csvCell).join(','));
     });
     const blob = new Blob(['\uFEFF' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `quiz-admin-details${selectedDate ? `-${selectedDate}` : ''}.csv`;
+    link.download = `quiz-leaderboard-${selectedDate}.csv`;
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -247,7 +237,7 @@ export default function AdminDetails() {
             </h3>
             <p className="text-xs text-emerald-800 mt-1 inline-flex items-center gap-1.5 font-semibold">
               <CalendarDays className="w-3.5 h-3.5" />
-              {selectedDate ? `${formatDateLabel(selectedDate)}${selectedDate === today ? ' • ఈరోజు' : ''}` : 'అన్ని తేదీలు (All dates)'}
+              {formatDateLabel(selectedDate)}{selectedDate === today ? ' • ఈరోజు' : ''}
             </p>
           </div>
         </div>
@@ -255,7 +245,7 @@ export default function AdminDetails() {
         <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={handleExportCsv}
-            disabled={!visibleRows.length}
+            disabled={!playerCount}
             className="px-2.5 sm:px-3 py-2 rounded-xl border border-emerald-200 text-emerald-900 hover:bg-emerald-50 disabled:opacity-40 text-xs sm:text-sm font-semibold flex items-center gap-1.5 transition cursor-pointer"
             title="CSV డౌన్ లోడ్"
           >
@@ -286,24 +276,35 @@ export default function AdminDetails() {
         ఈ గణాంకాలు మరియు ఆటగాళ్ల పూర్తి వివరాలు అడ్మిన్ కోసం మాత్రమే. ఆటగాళ్లకు ఫలితాలు WhatsApp ఛానెల్ లో ప్రకటిస్తారు.
       </p>
 
-      {/* Date filter */}
+      {/* Date picker — one date at a time */}
       <div className="flex flex-wrap items-center gap-2 mb-4">
         <input
           type="date"
           value={selectedDate}
-          onChange={(e) => setSelectedDate(e.target.value)}
+          onChange={(e) => { if (e.target.value) setSelectedDate(e.target.value); }}
           className="px-3 py-2 rounded-xl border border-emerald-200 bg-white text-sm text-emerald-950 font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500/30"
         />
         <button
           type="button"
-          onClick={() => setSelectedDate('')}
+          onClick={() => setSelectedDate(today)}
           className={`px-3 py-2 rounded-xl border text-xs sm:text-sm font-semibold transition cursor-pointer ${
-            !selectedDate
+            selectedDate === today
               ? 'bg-emerald-700 text-white border-emerald-700'
               : 'bg-white text-emerald-900 border-emerald-200 hover:bg-emerald-50'
           }`}
         >
-          అన్ని తేదీలు
+          ఈరోజు
+        </button>
+        <button
+          type="button"
+          onClick={() => setSelectedDate(yesterday)}
+          className={`px-3 py-2 rounded-xl border text-xs sm:text-sm font-semibold transition cursor-pointer ${
+            selectedDate === yesterday
+              ? 'bg-emerald-700 text-white border-emerald-700'
+              : 'bg-white text-emerald-900 border-emerald-200 hover:bg-emerald-50'
+          }`}
+        >
+          నిన్న
         </button>
       </div>
 
@@ -325,10 +326,11 @@ export default function AdminDetails() {
       ) : playerCount === 0 ? (
         <div className="py-10 text-center text-sm text-gray-500">
           ఈ తేదీకి ఇంకా ఫలితాలు లేవు.
+          <span className="block mt-1 text-xs text-gray-400">(తేదీ మార్చి మళ్లీ చూడండి)</span>
         </div>
       ) : (
         <>
-          {/* Overall summary */}
+          {/* Summary for the selected date */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 mb-3">
             <div className="rounded-2xl border border-emerald-200 bg-emerald-50/70 p-3 sm:p-3.5">
               <div className="flex items-center gap-1.5 text-[11px] sm:text-xs font-bold text-emerald-800 mb-1">
@@ -372,99 +374,95 @@ export default function AdminDetails() {
             </div>
           )}
 
-          {/* Per-date complete details */}
-          {dateKeys.map((key) => (
-            <section key={key} className="mb-6 last:mb-0">
-              <div className="flex items-center justify-between gap-2 mb-2">
-                <h4 className="font-bold text-emerald-950 text-sm sm:text-base flex items-center gap-2">
-                  <CalendarDays className="w-4 h-4 text-emerald-700" />
-                  {formatDateLabel(key)}
-                </h4>
-                <span className="text-[11px] sm:text-xs text-emerald-800 font-semibold">
-                  {groups[key].length} మంది ఆటగాళ్లు
-                </span>
-              </div>
-              <div className="overflow-x-auto rounded-2xl border border-emerald-100">
-                <table className="w-full min-w-[900px] text-left text-xs sm:text-sm">
-                  <thead>
-                    <tr className="border-b border-emerald-200 text-emerald-950 bg-emerald-50/70">
-                      <th className="py-2.5 px-3 font-bold whitespace-nowrap">ర్యాంక్</th>
-                      <th className="py-2.5 px-3 font-bold whitespace-nowrap">పేరు</th>
-                      <th className="py-2.5 px-3 font-bold whitespace-nowrap">ప్రాంతం</th>
-                      <th className="py-2.5 px-3 font-bold whitespace-nowrap">వృత్తి</th>
-                      <th className="py-2.5 px-3 text-center font-bold whitespace-nowrap">స్కోర్</th>
-                      <th className="py-2.5 px-3 font-bold whitespace-nowrap">శాతం</th>
-                      <th className="py-2.5 px-3 text-right font-bold whitespace-nowrap">సమయం</th>
-                      <th className="py-2.5 px-3 text-right font-bold whitespace-nowrap">సబ్మిట్ అయిన సమయం</th>
+          {/* Complete details for the selected date only */}
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <h4 className="font-bold text-emerald-950 text-sm sm:text-base flex items-center gap-2">
+              <CalendarDays className="w-4 h-4 text-emerald-700" />
+              {formatDateLabel(selectedDate)}
+            </h4>
+            <span className="text-[11px] sm:text-xs text-emerald-800 font-semibold">
+              {playerCount} మంది ఆటగాళ్లు
+            </span>
+          </div>
+          <div className="overflow-x-auto rounded-2xl border border-emerald-100">
+            <table className="w-full min-w-[900px] text-left text-xs sm:text-sm">
+              <thead>
+                <tr className="border-b border-emerald-200 text-emerald-950 bg-emerald-50/70">
+                  <th className="py-2.5 px-3 font-bold whitespace-nowrap">ర్యాంక్</th>
+                  <th className="py-2.5 px-3 font-bold whitespace-nowrap">పేరు</th>
+                  <th className="py-2.5 px-3 font-bold whitespace-nowrap">ప్రాంతం</th>
+                  <th className="py-2.5 px-3 font-bold whitespace-nowrap">వృత్తి</th>
+                  <th className="py-2.5 px-3 text-center font-bold whitespace-nowrap">స్కోర్</th>
+                  <th className="py-2.5 px-3 font-bold whitespace-nowrap">శాతం</th>
+                  <th className="py-2.5 px-3 text-right font-bold whitespace-nowrap">సమయం</th>
+                  <th className="py-2.5 px-3 text-right font-bold whitespace-nowrap">సబ్మిట్ అయిన సమయం</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-emerald-100/70">
+                {sortedRows.map((item, idx) => {
+                  const acc = accuracyOf(item);
+                  const text = acc >= 80 ? 'text-emerald-700' : acc >= 50 ? 'text-amber-700' : 'text-rose-600';
+                  const bar = acc >= 80 ? 'bg-emerald-600' : acc >= 50 ? 'bg-amber-500' : 'bg-rose-500';
+                  return (
+                    <tr key={item._rowIndex || `${item.name}-${item.submittedAt || idx}`} className="hover:bg-emerald-50/50">
+                      <td className="py-3 px-3 align-top">
+                        {idx === 0 ? (
+                          <span className="inline-flex items-center justify-center gap-1 px-2 py-1 rounded-xl bg-amber-100 text-amber-900 font-bold text-xs sm:text-sm border border-amber-300 shadow-sm whitespace-nowrap">
+                            🥇 1
+                          </span>
+                        ) : idx === 1 ? (
+                          <span className="inline-flex items-center justify-center gap-1 px-2 py-1 rounded-xl bg-slate-200 text-slate-800 font-bold text-xs sm:text-sm border border-slate-300 whitespace-nowrap">
+                            🥈 2
+                          </span>
+                        ) : idx === 2 ? (
+                          <span className="inline-flex items-center justify-center gap-1 px-2 py-1 rounded-xl bg-amber-50 text-amber-900 font-bold text-xs sm:text-sm border border-amber-200 whitespace-nowrap">
+                            🥉 3
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center justify-center w-7 h-7 rounded-xl bg-emerald-100 text-emerald-900 font-bold text-xs sm:text-sm">
+                            {idx + 1}
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-3 px-3 align-top font-bold text-emerald-950 whitespace-nowrap">{item.name}</td>
+                      <td className="py-3 px-3 align-top text-slate-700 whitespace-nowrap">
+                        <span className="inline-flex items-center gap-1">
+                          <MapPin className="w-3.5 h-3.5 text-emerald-700" />
+                          {item.location || '—'}
+                        </span>
+                      </td>
+                      <td className="py-3 px-3 align-top text-slate-700 whitespace-nowrap">
+                        <span className="inline-flex items-center gap-1">
+                          <Briefcase className="w-3.5 h-3.5 text-amber-700" />
+                          {item.occupation || '—'}
+                        </span>
+                      </td>
+                      <td className="py-3 px-3 text-center align-top font-bold text-emerald-950 whitespace-nowrap">
+                        {item.score} / {item.total || 10}
+                      </td>
+                      <td className="py-3 px-3 align-top">
+                        <div className="flex flex-col gap-1 min-w-[64px]">
+                          <span className={`font-bold ${text}`}>{acc}%</span>
+                          <div className="w-full h-1.5 rounded-full bg-emerald-100 overflow-hidden">
+                            <div className={`h-full rounded-full ${bar}`} style={{ width: `${acc}%` }} />
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-3 px-3 text-right align-top font-mono font-bold text-slate-800 whitespace-nowrap">
+                        <span className="inline-flex items-center gap-1">
+                          <Clock className="w-4 h-4 text-emerald-700" />
+                          {item.timeTakenFormatted || '00:00'}
+                        </span>
+                      </td>
+                      <td className="py-3 px-3 text-right align-top text-[11px] font-medium text-slate-500 whitespace-nowrap">
+                        {item.submittedAt || item.date || '—'}
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody className="divide-y divide-emerald-100/70">
-                    {groups[key].map((item, idx) => {
-                      const acc = accuracyOf(item);
-                      const text = acc >= 80 ? 'text-emerald-700' : acc >= 50 ? 'text-amber-700' : 'text-rose-600';
-                      const bar = acc >= 80 ? 'bg-emerald-600' : acc >= 50 ? 'bg-amber-500' : 'bg-rose-500';
-                      return (
-                        <tr key={item._rowIndex || `${item.name}-${item.submittedAt || idx}`} className="hover:bg-emerald-50/50">
-                          <td className="py-3 px-3 align-top">
-                            {idx === 0 ? (
-                              <span className="inline-flex items-center justify-center gap-1 px-2 py-1 rounded-xl bg-amber-100 text-amber-900 font-bold text-xs sm:text-sm border border-amber-300 shadow-sm whitespace-nowrap">
-                                🥇 1
-                              </span>
-                            ) : idx === 1 ? (
-                              <span className="inline-flex items-center justify-center gap-1 px-2 py-1 rounded-xl bg-slate-200 text-slate-800 font-bold text-xs sm:text-sm border border-slate-300 whitespace-nowrap">
-                                🥈 2
-                              </span>
-                            ) : idx === 2 ? (
-                              <span className="inline-flex items-center justify-center gap-1 px-2 py-1 rounded-xl bg-amber-50 text-amber-900 font-bold text-xs sm:text-sm border border-amber-200 whitespace-nowrap">
-                                🥉 3
-                              </span>
-                            ) : (
-                              <span className="inline-flex items-center justify-center w-7 h-7 rounded-xl bg-emerald-100 text-emerald-900 font-bold text-xs sm:text-sm">
-                                {idx + 1}
-                              </span>
-                            )}
-                          </td>
-                          <td className="py-3 px-3 align-top font-bold text-emerald-950 whitespace-nowrap">{item.name}</td>
-                          <td className="py-3 px-3 align-top text-slate-700 whitespace-nowrap">
-                            <span className="inline-flex items-center gap-1">
-                              <MapPin className="w-3.5 h-3.5 text-emerald-700" />
-                              {item.location || '—'}
-                            </span>
-                          </td>
-                          <td className="py-3 px-3 align-top text-slate-700 whitespace-nowrap">
-                            <span className="inline-flex items-center gap-1">
-                              <Briefcase className="w-3.5 h-3.5 text-amber-700" />
-                              {item.occupation || '—'}
-                            </span>
-                          </td>
-                          <td className="py-3 px-3 text-center align-top font-bold text-emerald-950 whitespace-nowrap">
-                            {item.score} / {item.total || 10}
-                          </td>
-                          <td className="py-3 px-3 align-top">
-                            <div className="flex flex-col gap-1 min-w-[64px]">
-                              <span className={`font-bold ${text}`}>{acc}%</span>
-                              <div className="w-full h-1.5 rounded-full bg-emerald-100 overflow-hidden">
-                                <div className={`h-full rounded-full ${bar}`} style={{ width: `${acc}%` }} />
-                              </div>
-                            </div>
-                          </td>
-                          <td className="py-3 px-3 text-right align-top font-mono font-bold text-slate-800 whitespace-nowrap">
-                            <span className="inline-flex items-center gap-1">
-                              <Clock className="w-4 h-4 text-emerald-700" />
-                              {item.timeTakenFormatted || '00:00'}
-                            </span>
-                          </td>
-                          <td className="py-3 px-3 text-right align-top text-[11px] font-medium text-slate-500 whitespace-nowrap">
-                            {item.submittedAt || item.date || '—'}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </section>
-          ))}
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </>
       )}
     </div>
