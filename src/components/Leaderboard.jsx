@@ -163,9 +163,6 @@ export default function Leaderboard({ highlightName, quizDate }) {
                 <ShieldCheck className="w-3 h-3" /> Admin
               </span>
             </h3>
-            <p className="text-xs sm:text-sm text-emerald-700/80 font-medium">
-              స్కోర్ ఎక్కువ → సమయం తక్కువ → ముందుగా సబ్మిట్ చేసినవారు
-            </p>
             <p className="text-xs text-emerald-800 mt-1 inline-flex items-center gap-1.5 font-semibold">
               <CalendarDays className="w-3.5 h-3.5" />
               {dateLabel}
