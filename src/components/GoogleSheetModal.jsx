@@ -11,6 +11,10 @@ function getTargetSheet_() {
   return sheet;
 }
 
+function normalizeNameKey_(value) {
+  return String(value || "").replace(/^\\s+|\\s+$/g, "").replace(/\\s+/g, " ").toLowerCase();
+}
+
 function doPost(e) {
   var lock = LockService.getScriptLock();
   lock.tryLock(10000);
@@ -25,14 +29,30 @@ function doPost(e) {
 
     var data = JSON.parse(e.postData.contents);
     var submittedAt = data.date || new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
+    var quizDate = String(data.quizDate || "");
+    var name = String(data.name || "");
     var score = Number(data.score) || 0;
     var total = Number(data.total) || 0;
 
+    // Only the first submission per user (name) per quiz date is recorded.
+    var nameKey = normalizeNameKey_(name);
+    if (quizDate && nameKey) {
+      var rows = sheet.getDataRange().getValues();
+      for (var i = 1; i < rows.length; i++) {
+        var rowQuizDate = String(rows[i][1] || "");
+        var rowNameKey = normalizeNameKey_(rows[i][3]);
+        if (rowQuizDate === quizDate && rowNameKey === nameKey) {
+          return ContentService.createTextOutput(JSON.stringify({ status: "duplicate", message: "First submission already recorded." }))
+            .setMimeType(ContentService.MimeType.JSON);
+        }
+      }
+    }
+
     sheet.appendRow([
       submittedAt,
-      data.quizDate || "",
+      quizDate,
       data.quizLabel || "",
-      data.name || "",
+      name,
       data.location || "",
       data.occupation || "",
       score,

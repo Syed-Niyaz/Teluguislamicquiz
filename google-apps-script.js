@@ -83,6 +83,10 @@ function formatSeconds_(value) {
   return ("0" + m).slice(-2) + ":" + ("0" + s).slice(-2);
 }
 
+function normalizeNameKey_(value) {
+  return String(value || "").replace(/^\s+|\s+$/g, "").replace(/\s+/g, " ").toLowerCase();
+}
+
 function getTargetSheet_() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheetByName(TARGET_SHEET_NAME);
@@ -225,6 +229,22 @@ function doPost(e) {
     var timeTakenSeconds = Number(data.timeTakenSeconds) || 0;
     var timeTakenFormatted = formatSeconds_(timeTakenSeconds) || data.timeTakenFormatted || "";
     var percentage = total ? Math.round((score / total) * 100) + "%" : "0%";
+
+    // Only the first submission per user (name) per quiz date is recorded.
+    var nameKey = normalizeNameKey_(name);
+    if (quizDate && nameKey) {
+      var rows = sheet.getDataRange().getValues();
+      for (var i = 1; i < rows.length; i++) {
+        var rowQuizDate = toDateKeyString_(rows[i][1]);
+        var rowNameKey = normalizeNameKey_(rows[i][3]);
+        if (rowQuizDate === quizDate && rowNameKey === nameKey) {
+          return ContentService.createTextOutput(JSON.stringify({
+            status: "duplicate",
+            message: "First submission for this quiz date already recorded."
+          })).setMimeType(ContentService.MimeType.JSON);
+        }
+      }
+    }
 
     // Write as plain text so Sheets cannot convert dates/times/percentages into
     // serial numbers (this is what previously broke date filtering).

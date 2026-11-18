@@ -70,6 +70,15 @@ const sortResults = (list) =>
     return String(a.submittedAt || a.date || '').localeCompare(String(b.submittedAt || b.date || ''));
   });
 
+const normalizeNameKey = (value) => String(value || '').trim().replace(/\s+/g, ' ').toLowerCase();
+
+export const hasSubmittedQuiz = (quizDate, name) => {
+  const qKey = normalizeDateKey(quizDate);
+  const nKey = normalizeNameKey(name);
+  if (!qKey || !nKey) return false;
+  return getLocalResults(qKey).some((r) => normalizeNameKey(r.name) === nKey);
+};
+
 export const getSavedScriptUrl = () => {
   return localStorage.getItem(STORAGE_KEY_SCRIPT_URL) || DEFAULT_SCRIPT_URL;
 };
@@ -142,7 +151,12 @@ export const saveLocalResult = (entry) => {
     const raw = localStorage.getItem(STORAGE_KEY_LOCAL_RESULTS);
     const parsed = raw ? JSON.parse(raw) : [];
     const current = Array.isArray(parsed) ? parsed : [];
-    const updated = [{ ...entry, quizDate: normalizeDateKey(entry.quizDate) }, ...current];
+    const quizDate = normalizeDateKey(entry.quizDate);
+    const nameKey = normalizeNameKey(entry.name);
+    if (quizDate && nameKey && current.some((r) => normalizeDateKey(r.quizDate) === quizDate && normalizeNameKey(r.name) === nameKey)) {
+      return current;
+    }
+    const updated = [{ ...entry, quizDate }, ...current];
     localStorage.setItem(STORAGE_KEY_LOCAL_RESULTS, JSON.stringify(updated.slice(0, 200)));
     return updated;
   } catch (err) {
@@ -154,6 +168,7 @@ export const saveLocalResult = (entry) => {
 /**
  * Submit quiz result to Google Sheets (instantly).
  * Saves locally first so the result is never lost, then posts to the sheet.
+ * Only the first submission per user (name) per quizDate is recorded.
  */
 export const submitQuizToGoogleSheets = async (resultData) => {
   const payload = {
@@ -161,7 +176,21 @@ export const submitQuizToGoogleSheets = async (resultData) => {
     quizDate: normalizeDateKey(resultData.quizDate)
   };
 
-  // Always save locally first so the user gets instant results
+  const quizDate = payload.quizDate;
+  const nameKey = normalizeNameKey(payload.name);
+  const alreadySubmitted =
+    !!quizDate && !!nameKey && getLocalResults(quizDate).some((r) => normalizeNameKey(r.name) === nameKey);
+
+  if (alreadySubmitted) {
+    return {
+      success: true,
+      duplicate: true,
+      syncedToSheet: false,
+      message: 'ఈ రోజు క్విజ్‌కు మీ మొదటి ఫలితం ఇప్పటికే నమోదు అయింది. మళ్లీ ఆడిన ఫలితాలు లెక్కించబడవు.'
+    };
+  }
+
+  // Save locally first so the user gets instant results
   saveLocalResult(payload);
 
   const scriptUrl = getSavedScriptUrl();
