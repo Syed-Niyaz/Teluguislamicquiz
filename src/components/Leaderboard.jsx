@@ -11,7 +11,11 @@ import {
   Eye,
   EyeOff,
   ShieldCheck,
-  AlertTriangle
+  AlertTriangle,
+  Users,
+  Target,
+  TrendingUp,
+  Zap
 } from 'lucide-react';
 import { fetchLeaderboard, ADMIN_PASSWORD } from '../services/sheetService';
 import { formatDateLabel, toDateKey, addDays } from '../data/dailyQuizzes';
@@ -24,6 +28,20 @@ const readAuth = () => {
   } catch (err) {
     return false;
   }
+};
+
+// Live sheet rows can be missing total/percentage (older script deployments),
+// so accuracy is always calculated from score / total here, admin-side only.
+const accuracyOf = (item) => {
+  const total = Number(item.total) || 10;
+  const score = Number(item.score) || 0;
+  return Math.max(0, Math.min(100, Math.round((score / total) * 100)));
+};
+
+const formatClock = (secs) => {
+  const m = Math.floor(secs / 60);
+  const s = secs % 60;
+  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 };
 
 export default function Leaderboard({ highlightName, quizDate }) {
@@ -139,6 +157,9 @@ export default function Leaderboard({ highlightName, quizDate }) {
             <ShieldCheck className="w-3.5 h-3.5" />
             Only admin can view full player results
           </p>
+          <p className="text-[11px] text-emerald-800/80 font-medium mt-1.5">
+            స్కోర్, శాతం, సమయం మరియు మొత్తం గణాంకాలు అడ్మిన్ వ్యూలో మాత్రమే కనిపిస్తాయి.
+          </p>
         </div>
       </div>
     );
@@ -148,6 +169,17 @@ export default function Leaderboard({ highlightName, quizDate }) {
   const dateLabel = allDates
     ? 'అన్ని తేదీలు (All dates)'
     : `${formatDateLabel(selectedDate)}${selectedDate === today ? ' • ఈరోజు' : ''}`;
+
+  const playerCount = leaderboard.length;
+  const averageScore = playerCount
+    ? (leaderboard.reduce((sum, item) => sum + (Number(item.score) || 0), 0) / playerCount).toFixed(1)
+    : '0';
+  const averageAccuracy = playerCount
+    ? Math.round(leaderboard.reduce((sum, item) => sum + accuracyOf(item), 0) / playerCount)
+    : 0;
+  const times = leaderboard.map((item) => Number(item.timeTakenSeconds) || 0).filter((s) => s > 0);
+  const fastestTime = times.length ? Math.min(...times) : null;
+  const topPlayer = leaderboard[0];
 
   return (
     <div className="bg-white rounded-3xl p-4 sm:p-8 border border-emerald-100/90 shadow-md mt-6">
@@ -253,6 +285,52 @@ export default function Leaderboard({ highlightName, quizDate }) {
         </div>
       )}
 
+      {/* Extra insights — visible to admin only */}
+      {!loading && playerCount > 0 && (
+        <>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 mb-3">
+            <div className="rounded-2xl border border-emerald-200 bg-emerald-50/70 p-3 sm:p-3.5">
+              <div className="flex items-center gap-1.5 text-[11px] sm:text-xs font-bold text-emerald-800 mb-1">
+                <Users className="w-3.5 h-3.5" /> పాల్గొన్నవారు
+              </div>
+              <div className="text-xl sm:text-2xl font-extrabold text-emerald-950">{playerCount}</div>
+            </div>
+            <div className="rounded-2xl border border-sky-200 bg-sky-50/70 p-3 sm:p-3.5">
+              <div className="flex items-center gap-1.5 text-[11px] sm:text-xs font-bold text-sky-800 mb-1">
+                <Target className="w-3.5 h-3.5" /> సగటు స్కోరు
+              </div>
+              <div className="text-xl sm:text-2xl font-extrabold text-sky-950">{averageScore}<span className="text-xs sm:text-sm font-semibold text-sky-700"> / 10</span></div>
+            </div>
+            <div className="rounded-2xl border border-amber-200 bg-amber-50/70 p-3 sm:p-3.5">
+              <div className="flex items-center gap-1.5 text-[11px] sm:text-xs font-bold text-amber-800 mb-1">
+                <TrendingUp className="w-3.5 h-3.5" /> సగటు శాతం
+              </div>
+              <div className="text-xl sm:text-2xl font-extrabold text-amber-950">{averageAccuracy}%</div>
+            </div>
+            <div className="rounded-2xl border border-purple-200 bg-purple-50/70 p-3 sm:p-3.5">
+              <div className="flex items-center gap-1.5 text-[11px] sm:text-xs font-bold text-purple-800 mb-1">
+                <Zap className="w-3.5 h-3.5" /> వేగవంతమైన సమయం
+              </div>
+              <div className="text-xl sm:text-2xl font-extrabold text-purple-950 font-mono">
+                {fastestTime !== null ? formatClock(fastestTime) : '—'}
+              </div>
+            </div>
+          </div>
+
+          {topPlayer && (
+            <div className="mb-4 p-3 rounded-2xl bg-gradient-to-r from-amber-50 to-emerald-50 border border-amber-200/80 flex items-center gap-3">
+              <span className="text-2xl leading-none">🏆</span>
+              <div className="min-w-0 text-xs sm:text-sm text-emerald-950 font-semibold flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                <span className="text-emerald-700 font-bold">టాప్ పెర్ఫార్మర్:</span>
+                <span className="font-extrabold">{topPlayer.name}</span>
+                <span className="text-emerald-800">{topPlayer.score} / {topPlayer.total || 10}</span>
+                <span className="text-amber-800 font-bold">{accuracyOf(topPlayer)}%</span>
+              </div>
+            </div>
+          )}
+        </>
+      )}
+
       {loading ? (
         <div className="py-12 text-center">
           <div className="w-9 h-9 border-3 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
@@ -267,12 +345,13 @@ export default function Leaderboard({ highlightName, quizDate }) {
         </div>
       ) : (
         <div className="overflow-x-auto -mx-2 sm:mx-0 px-2 sm:px-0">
-          <table className="w-full min-w-[560px] text-left text-sm sm:text-base">
+          <table className="w-full min-w-[680px] text-left text-sm sm:text-base">
             <thead>
               <tr className="border-b border-emerald-200 text-emerald-950 bg-emerald-50/70">
                 <th className="py-3 px-3 sm:px-3.5 rounded-l-2xl font-bold whitespace-nowrap">ర్యాంక్</th>
                 <th className="py-3 px-3 sm:px-3.5 font-bold">పేరు & వివరాలు</th>
                 <th className="py-3 px-3 sm:px-3.5 text-center font-bold whitespace-nowrap">స్కోర్</th>
+                <th className="py-3 px-3 sm:px-3.5 font-bold whitespace-nowrap">శాతం / Accuracy</th>
                 <th className="py-3 px-3 sm:px-3.5 text-right rounded-r-2xl font-bold whitespace-nowrap">సమయం</th>
               </tr>
             </thead>
@@ -341,6 +420,22 @@ export default function Leaderboard({ highlightName, quizDate }) {
                       <span className="inline-block px-3 py-1 rounded-xl bg-emerald-50 text-emerald-900 border border-emerald-200 font-bold text-sm sm:text-base shadow-sm">
                         {item.score} / {item.total || 10}
                       </span>
+                    </td>
+
+                    <td className="py-3.5 px-3.5 align-top">
+                      {(() => {
+                        const acc = accuracyOf(item);
+                        const bar = acc >= 80 ? 'bg-emerald-600' : acc >= 50 ? 'bg-amber-500' : 'bg-rose-500';
+                        const text = acc >= 80 ? 'text-emerald-700' : acc >= 50 ? 'text-amber-700' : 'text-rose-600';
+                        return (
+                          <div className="flex flex-col gap-1.5 min-w-[72px]">
+                            <span className={`font-bold text-sm sm:text-base ${text}`}>{acc}%</span>
+                            <div className="w-full h-1.5 rounded-full bg-emerald-100 overflow-hidden">
+                              <div className={`h-full rounded-full ${bar}`} style={{ width: `${acc}%` }} />
+                            </div>
+                          </div>
+                        );
+                      })()}
                     </td>
 
                     <td className="py-3.5 px-3.5 text-right font-mono text-sm sm:text-base font-bold text-slate-800 align-top">
