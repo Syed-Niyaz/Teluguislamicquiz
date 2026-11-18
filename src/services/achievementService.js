@@ -20,7 +20,8 @@ export const ACHIEVEMENTS = [
     target: 1,
     art: 'from-amber-700 to-yellow-700',
     ring: 'border-amber-400 bg-amber-50/80',
-    glow: 'shadow-[0_0_20px_rgba(180,120,40,0.30)]'
+    glow: 'shadow-[0_0_20px_rgba(180,120,40,0.30)]',
+    iconCredit: { label: 'Goal icon by Magnific', href: 'https://www.flaticon.com/free-icons/goal' }
   },
   {
     id: 'talib',
@@ -34,7 +35,8 @@ export const ACHIEVEMENTS = [
     target: 5,
     art: 'from-orange-700 to-amber-600',
     ring: 'border-orange-400 bg-orange-50/80',
-    glow: 'shadow-[0_0_20px_rgba(194,120,40,0.28)]'
+    glow: 'shadow-[0_0_20px_rgba(194,120,40,0.28)]',
+    iconCredit: { label: 'Goal icon by Magnific', href: 'https://www.flaticon.com/free-icons/goal' }
   },
   {
     id: 'sabr',
@@ -48,7 +50,8 @@ export const ACHIEVEMENTS = [
     target: 3,
     art: 'from-emerald-600 to-teal-800',
     ring: 'border-emerald-400 bg-emerald-50/80',
-    glow: 'shadow-[0_0_20px_rgba(16,130,90,0.28)]'
+    glow: 'shadow-[0_0_20px_rgba(16,130,90,0.28)]',
+    iconCredit: { label: 'Achievement icon by Magnific', href: 'https://www.flaticon.com/free-icons/achievement' }
   },
   {
     id: 'rah',
@@ -62,7 +65,8 @@ export const ACHIEVEMENTS = [
     target: 100,
     art: 'from-slate-500 to-zinc-700',
     ring: 'border-slate-400 bg-slate-50/80',
-    glow: 'shadow-[0_0_20px_rgba(120,130,145,0.28)]'
+    glow: 'shadow-[0_0_20px_rgba(120,130,145,0.28)]',
+    iconCredit: { label: 'Achievement icon by flatart_icons', href: 'https://www.flaticon.com/free-icons/achievement' }
   },
   {
     id: 'nurani',
@@ -76,7 +80,8 @@ export const ACHIEVEMENTS = [
     target: 7,
     art: 'from-teal-600 to-emerald-900',
     ring: 'border-teal-400 bg-teal-50/80',
-    glow: 'shadow-[0_0_20px_rgba(13,148,136,0.28)]'
+    glow: 'shadow-[0_0_20px_rgba(13,148,136,0.28)]',
+    iconCredit: { label: 'Success icon by Magnific', href: 'https://www.flaticon.com/free-icons/success' }
   },
   {
     id: 'fath',
@@ -90,7 +95,8 @@ export const ACHIEVEMENTS = [
     target: 90,
     art: 'from-yellow-500 to-amber-700',
     ring: 'border-yellow-500 bg-yellow-50/80',
-    glow: 'shadow-[0_0_22px_rgba(212,175,55,0.35)]'
+    glow: 'shadow-[0_0_22px_rgba(212,175,55,0.35)]',
+    iconCredit: { label: 'Reward icon by Heykiyou', href: 'https://www.flaticon.com/free-icons/reward' }
   },
   {
     id: 'jawahir',
@@ -104,7 +110,8 @@ export const ACHIEVEMENTS = [
     target: 500,
     art: 'from-zinc-400 to-slate-600',
     ring: 'border-zinc-400 bg-zinc-50/80',
-    glow: 'shadow-[0_0_20px_rgba(130,140,155,0.28)]'
+    glow: 'shadow-[0_0_20px_rgba(130,140,155,0.28)]',
+    iconCredit: { label: 'High quality icon by Prosymbols Premium', href: 'https://www.flaticon.com/free-icons/high-quality' }
   },
   {
     id: 'istiqamat',
@@ -118,7 +125,8 @@ export const ACHIEVEMENTS = [
     target: 30,
     art: 'from-green-700 to-emerald-950',
     ring: 'border-green-500 bg-green-50/80',
-    glow: 'shadow-[0_0_20px_rgba(20,120,70,0.30)]'
+    glow: 'shadow-[0_0_20px_rgba(20,120,70,0.30)]',
+    iconCredit: { label: 'Trophy icon by Magnific', href: 'https://www.flaticon.com/free-icons/trophy' }
   },
   {
     id: 'barakat',
@@ -132,7 +140,8 @@ export const ACHIEVEMENTS = [
     target: 1000,
     art: 'from-amber-400 via-yellow-600 to-amber-800',
     ring: 'border-amber-500 bg-amber-50/80',
-    glow: 'shadow-[0_0_24px_rgba(218,165,32,0.40)]'
+    glow: 'shadow-[0_0_24px_rgba(218,165,32,0.40)]',
+    iconCredit: { label: 'Fifa icon by cube29', href: 'https://www.flaticon.com/free-icons/fifa' }
   },
   {
     id: 'nurul',
@@ -146,7 +155,8 @@ export const ACHIEVEMENTS = [
     target: 1,
     art: 'from-yellow-300 via-amber-500 to-yellow-800',
     ring: 'border-yellow-600 bg-yellow-50/80',
-    glow: 'shadow-[0_0_26px_rgba(212,175,55,0.45)]'
+    glow: 'shadow-[0_0_26px_rgba(212,175,55,0.45)]',
+    iconCredit: { label: 'Certificate icon by Smashicons', href: 'https://www.flaticon.com/free-icons/certificate' }
   }
 ];
 

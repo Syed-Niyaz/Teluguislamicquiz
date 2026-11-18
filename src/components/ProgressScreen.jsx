@@ -152,6 +152,16 @@ function BadgeDetailModal({ badge, unlocked, unlockedDate, progress, onClose }) 
           </span>
           <h3 className="mt-2 text-xl font-extrabold text-emerald-950">{badge.title}</h3>
           <p className="mt-2 text-sm text-slate-600 font-medium">{badge.requirement}</p>
+          {badge.iconCredit && (
+            <a
+              href={badge.iconCredit.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 inline-flex items-center gap-1 text-[10px] font-semibold text-teal-700 hover:text-teal-900 hover:underline"
+            >
+              Icon: {badge.iconCredit.label} ↗
+            </a>
+          )}
 
           {unlocked ? (
             <div className="mt-5 rounded-2xl border border-emerald-100 bg-emerald-50/50 p-3.5">
@@ -364,11 +374,9 @@ export default function ProgressScreen({ onStartQuiz }) {
             const isUnlocked = !!state.unlocked[badge.id];
             const progress = badgeProgress(badge, stats);
             return (
-              <button
-                type="button"
+              <div
                 key={badge.id}
-                onClick={() => setSelected(badge)}
-                className={`relative min-h-[214px] rounded-2xl border p-4 text-left transition-all duration-200 cursor-pointer ${
+                className={`relative min-h-[214px] rounded-2xl border p-4 transition-all duration-200 ${
                   isUnlocked
                     ? 'card-surface hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(15,118,110,0.10)]'
                     : LOCKED_CARD
@@ -377,49 +385,66 @@ export default function ProgressScreen({ onStartQuiz }) {
                 {isUnlocked && (
                   <span className="absolute inset-x-5 top-0 h-px bg-gradient-to-r from-transparent via-amber-400 to-transparent" />
                 )}
-                <div className="flex items-start justify-between gap-2">
-                  <BadgeMedallion badge={badge} unlocked={isUnlocked} />
-                  {isUnlocked ? (
-                    <span className="w-6 h-6 rounded-full bg-teal-700 text-white flex items-center justify-center shrink-0">
-                      <Check className="w-3 h-3" />
-                    </span>
-                  ) : (
-                    <span className="w-6 h-6 rounded-full bg-white border border-[#d6e1ea] text-[#8a9daf] flex items-center justify-center shrink-0">
-                      <Lock className="w-3 h-3" />
-                    </span>
-                  )}
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setSelected(badge)}
+                  aria-label={`${badge.title} వివరాలు`}
+                  className="w-full text-left cursor-pointer"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <BadgeMedallion badge={badge} unlocked={isUnlocked} />
+                    {isUnlocked ? (
+                      <span className="w-6 h-6 rounded-full bg-teal-700 text-white flex items-center justify-center shrink-0">
+                        <Check className="w-3 h-3" />
+                      </span>
+                    ) : (
+                      <span className="w-6 h-6 rounded-full bg-white border border-[#d6e1ea] text-[#8a9daf] flex items-center justify-center shrink-0">
+                        <Lock className="w-3 h-3" />
+                      </span>
+                    )}
+                  </div>
 
-                <span className={`mt-3 inline-block text-[9px] font-bold px-2 py-0.5 rounded-full ring-1 ${TIER_CHIP[badge.tier]}`}>
-                  {badge.tierLabel}
-                </span>
-                <div className={`mt-2 text-[13px] font-extrabold leading-snug ${isUnlocked ? 'text-emerald-950' : 'text-[#6c8398]'}`}>
-                  {badge.title}
-                </div>
-                <p className={`mt-1 text-[11px] leading-snug font-medium min-h-[32px] ${isUnlocked ? 'text-slate-500' : 'text-[#8a9daf]'}`}>
-                  {badge.requirement}
-                </p>
+                  <span className={`mt-3 inline-block text-[9px] font-bold px-2 py-0.5 rounded-full ring-1 ${TIER_CHIP[badge.tier]}`}>
+                    {badge.tierLabel}
+                  </span>
+                  <div className={`mt-2 text-[13px] font-extrabold leading-snug ${isUnlocked ? 'text-emerald-950' : 'text-[#6c8398]'}`}>
+                    {badge.title}
+                  </div>
+                  <p className={`mt-1 text-[11px] leading-snug font-medium min-h-[32px] ${isUnlocked ? 'text-slate-500' : 'text-[#8a9daf]'}`}>
+                    {badge.requirement}
+                  </p>
 
-                <div className="mt-3 border-t border-slate-100 pt-2.5">
-                  {isUnlocked ? (
-                    <div className="text-[10px] font-bold text-emerald-800">
-                      📅 {formatUnlockDate(state.unlocked[badge.id])}
-                    </div>
-                  ) : (
-                    <>
-                      <div className="h-1.5 rounded-full bg-[#e2eaf1] overflow-hidden">
-                        <div
-                          className="h-full rounded-full bg-[#9db1c2] transition-all duration-500"
-                          style={{ width: `${progress.percent}%` }}
-                        />
+                  <div className="mt-3 border-t border-slate-100 pt-2.5">
+                    {isUnlocked ? (
+                      <div className="text-[10px] font-bold text-emerald-800">
+                        📅 {formatUnlockDate(state.unlocked[badge.id])}
                       </div>
-                      <div className="mt-1 text-[10px] font-semibold text-[#8a9daf] tabular-nums">
-                        {progress.current} / {progress.target}
-                      </div>
-                    </>
-                  )}
-                </div>
-              </button>
+                    ) : (
+                      <>
+                        <div className="h-1.5 rounded-full bg-[#e2eaf1] overflow-hidden">
+                          <div
+                            className="h-full rounded-full bg-[#9db1c2] transition-all duration-500"
+                            style={{ width: `${progress.percent}%` }}
+                          />
+                        </div>
+                        <div className="mt-1 text-[10px] font-semibold text-[#8a9daf] tabular-nums">
+                          {progress.current} / {progress.target}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </button>
+                {badge.iconCredit && (
+                  <a
+                    href={badge.iconCredit.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-1.5 inline-flex items-center gap-1 text-[9px] font-semibold text-teal-700/80 hover:text-teal-900 hover:underline"
+                  >
+                    Icon: {badge.iconCredit.label} ↗
+                  </a>
+                )}
+              </div>
             );
           })}
         </div>

@@ -15,8 +15,19 @@ Examples:
 Or: sprout.png, book.svg, moon.svg, star.svg, sparkles.svg, medal.svg,
     gem.svg, landmark.svg, crown.svg, certificate.svg
 
-Badge 10 (nurul) uses certificate.svg — certificate icon by Smashicons:
-https://www.flaticon.com/free-icons/certificate
+Flaticon credits (one per badge, in badge order):
+  1  niyyat     Goal            Magnific            flaticon.com/free-icons/goal
+  2  talib      Goal            Magnific            flaticon.com/free-icons/goal
+  3  sabr       Achievement     Magnific            flaticon.com/free-icons/achievement
+  4  rah        Achievement     flatart_icons       flaticon.com/free-icons/achievement
+  5  nurani     Success         Magnific            flaticon.com/free-icons/success
+  6  fath       Reward          Heykiyou            flaticon.com/free-icons/reward
+  7  jawahir    High quality    Prosymbols Premium  flaticon.com/free-icons/high-quality
+  8  istiqamat  Trophy          Magnific            flaticon.com/free-icons/trophy
+  9  barakat    Fifa            cube29              flaticon.com/free-icons/fifa
+  10 nurul      Certificate     Smashicons          flaticon.com/free-icons/certificate
+
+These credits are also shown on each badge card and in its detail popup.
 
 A "badge-" or "icon-" prefix is allowed too (e.g. badge-niyyat.svg).
 Supported: .svg .png .webp .jpg .jpeg
