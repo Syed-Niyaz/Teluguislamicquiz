@@ -9,7 +9,7 @@ import {
   Gem,
   Landmark,
   Crown,
-  Trophy,
+  ScrollText,
   Award,
   Lock,
   Check,
@@ -41,7 +41,7 @@ const ICONS = {
   gem: Gem,
   landmark: Landmark,
   crown: Crown,
-  trophy: Trophy
+  certificate: ScrollText
 };
 
 // Unlocked badges are always emerald / teal green.

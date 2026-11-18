@@ -13,7 +13,10 @@ Examples:
   barakat.svg
   nurul.svg
 Or: sprout.png, book.svg, moon.svg, star.svg, sparkles.svg, medal.svg,
-    gem.svg, landmark.svg, crown.svg, trophy.svg
+    gem.svg, landmark.svg, crown.svg, certificate.svg
+
+Badge 10 (nurul) uses certificate.svg — certificate icon by Smashicons:
+https://www.flaticon.com/free-icons/certificate
 
 A "badge-" or "icon-" prefix is allowed too (e.g. badge-niyyat.svg).
 Supported: .svg .png .webp .jpg .jpeg

@@ -136,8 +136,8 @@ export const ACHIEVEMENTS = [
   },
   {
     id: 'nurul',
-    icon: '🏆',
-    iconKey: 'trophy',
+    icon: '📜',
+    iconKey: 'certificate',
     title: 'నూరుల్ హిదాయత్',
     requirement: 'లీడర్ బోర్డ్ లో మొదటి స్థానం సాధించండి.',
     tier: 'premium',
