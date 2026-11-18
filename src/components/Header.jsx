@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { BookOpen, Menu, History, Settings, Trophy, MessageCircle, TrendingUp } from 'lucide-react';
+import { BookOpen, Menu, History, Trophy, MessageCircle, TrendingUp, User } from 'lucide-react';
 import { WHATSAPP_CHANNEL_URL } from '../data/links';
 
 export default function Header({ onGoHome, onOpenPrevious, onOpenLeaderboard, onOpenProgress, onOpenSettings }) {
@@ -89,8 +89,8 @@ export default function Header({ onGoHome, onOpenPrevious, onOpenLeaderboard, on
                 onClick={() => { setMenuOpen(false); onOpenSettings?.(); }}
                 className="w-full px-4 py-3 text-left text-sm font-semibold text-emerald-950 hover:bg-emerald-50 flex items-center gap-2.5 border-t border-emerald-50 cursor-pointer"
               >
-                <Settings className="w-4 h-4 text-emerald-700" />
-                <span>సెట్టింగ్స్</span>
+                <User className="w-4 h-4 text-emerald-700" />
+                <span>మీ వివరాలు మార్చండి</span>
               </button>
             </div>
           )}

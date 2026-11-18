@@ -164,7 +164,7 @@ export default function App() {
         onOpenPrevious={() => setScreen('previous')}
         onOpenLeaderboard={() => handleOpenLeaderboard(selectedQuizDate || toDateKey())}
         onOpenProgress={() => setScreen('progress')}
-        onOpenSettings={() => {}}
+        onOpenSettings={handleEditProfile}
       />
 
       {/* Main Content Areas based on current screen */}
