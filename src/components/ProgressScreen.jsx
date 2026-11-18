@@ -151,6 +151,9 @@ function BadgeDetailModal({ badge, unlocked, unlockedDate, progress, onClose }) 
           </span>
 
           <h3 className="mt-3 text-xl font-extrabold text-emerald-950">{badge.title}</h3>
+          {badge.meaning && (
+            <p className="mt-1 text-sm font-semibold text-teal-700">{badge.meaning}</p>
+          )}
           <p className="mt-2 text-sm text-slate-600 font-medium leading-relaxed">{badge.requirement}</p>
 
           {unlocked ? (
@@ -320,6 +323,9 @@ export default function ProgressScreen({ onStartQuiz }) {
               <div className="text-sm sm:text-base font-extrabold text-emerald-950 truncate mt-0.5">
                 {nextBadge.title}
               </div>
+              {nextBadge.meaning && (
+                <div className="text-xs font-semibold text-teal-700 mt-0.5">{nextBadge.meaning}</div>
+              )}
               <div className="text-xs text-slate-500 font-medium mt-0.5">{nextBadge.requirement}</div>
             </div>
             <div className="text-right shrink-0">
@@ -412,6 +418,15 @@ export default function ProgressScreen({ onStartQuiz }) {
                 >
                   {badge.title}
                 </div>
+                {badge.meaning && (
+                  <div
+                    className={`mt-0.5 text-[11px] font-semibold leading-snug ${
+                      isUnlocked ? 'text-teal-700' : 'text-[#7c95a8]'
+                    }`}
+                  >
+                    {badge.meaning}
+                  </div>
+                )}
 
                 <p
                   className={`mt-1.5 text-[11px] leading-relaxed font-medium min-h-[34px] ${
