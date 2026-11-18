@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { BookOpen, Menu, History, Settings, Trophy, MessageCircle, FileText } from 'lucide-react';
+import { BookOpen, Menu, History, Settings, Trophy, MessageCircle } from 'lucide-react';
 import { WHATSAPP_CHANNEL_URL } from '../data/links';
 
-export default function Header({ onGoHome, onOpenPrevious, onOpenLeaderboard, onOpenAdminDetails, onOpenSettings }) {
+export default function Header({ onGoHome, onOpenPrevious, onOpenLeaderboard, onOpenSettings }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
 
@@ -75,14 +75,6 @@ export default function Header({ onGoHome, onOpenPrevious, onOpenLeaderboard, on
               >
                 <Trophy className="w-4 h-4 text-amber-700" />
                 <span>లీడర్‌బోర్డ్ (Admin)</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => { setMenuOpen(false); onOpenAdminDetails?.(); }}
-                className="w-full px-4 py-3 text-left text-sm font-semibold text-emerald-950 hover:bg-emerald-50 flex items-center gap-2.5 border-t border-emerald-50 cursor-pointer"
-              >
-                <FileText className="w-4 h-4 text-sky-700" />
-                <span>పూర్తి వివరాలు (Admin)</span>
               </button>
               <button
                 type="button"

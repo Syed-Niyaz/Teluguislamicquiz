@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
   Clock,
   RefreshCw,
-  Trophy,
   MapPin,
   Briefcase,
   CalendarDays,
@@ -126,9 +125,9 @@ export default function AdminDetails() {
           <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700 shadow-sm">
             <Lock className="w-7 h-7" />
           </div>
-          <h3 className="text-lg sm:text-xl font-bold text-emerald-950">పూర్తి వివరాలు (Admin Only)</h3>
+          <h3 className="text-lg sm:text-xl font-bold text-emerald-950">లీడర్ బోర్డ్ (Admin Only)</h3>
           <p className="text-sm text-emerald-800/80 font-medium mt-1 mb-5">
-            ప్రతి ఆటగాడి పూర్తి వివరాలు చూడటానికి అడ్మిన్ పాస్ వర్డ్ నమోదు చేయండి.
+            లీడర్ బోర్డ్ మరియు ప్రతి ఆటగాడి పూర్తి వివరాలు చూడటానికి అడ్మిన్ పాస్ వర్డ్ నమోదు చేయండి.
           </p>
 
           <form onSubmit={handleUnlock} className="space-y-3 text-left">
@@ -241,7 +240,7 @@ export default function AdminDetails() {
           </div>
           <div className="min-w-0">
             <h3 className="text-lg sm:text-xl font-bold text-emerald-950 flex flex-wrap items-center gap-2">
-              పూర్తి వివరాలు
+              లీడర్ బోర్డ్
               <span className="inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
                 <ShieldCheck className="w-3 h-3" /> Admin
               </span>
@@ -407,9 +406,23 @@ export default function AdminDetails() {
                       return (
                         <tr key={item._rowIndex || `${item.name}-${item.submittedAt || idx}`} className="hover:bg-emerald-50/50">
                           <td className="py-3 px-3 align-top">
-                            <span className="inline-flex items-center justify-center w-7 h-7 rounded-xl bg-emerald-100 text-emerald-900 font-bold">
-                              {idx + 1}
-                            </span>
+                            {idx === 0 ? (
+                              <span className="inline-flex items-center justify-center gap-1 px-2 py-1 rounded-xl bg-amber-100 text-amber-900 font-bold text-xs sm:text-sm border border-amber-300 shadow-sm whitespace-nowrap">
+                                🥇 1
+                              </span>
+                            ) : idx === 1 ? (
+                              <span className="inline-flex items-center justify-center gap-1 px-2 py-1 rounded-xl bg-slate-200 text-slate-800 font-bold text-xs sm:text-sm border border-slate-300 whitespace-nowrap">
+                                🥈 2
+                              </span>
+                            ) : idx === 2 ? (
+                              <span className="inline-flex items-center justify-center gap-1 px-2 py-1 rounded-xl bg-amber-50 text-amber-900 font-bold text-xs sm:text-sm border border-amber-200 whitespace-nowrap">
+                                🥉 3
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center justify-center w-7 h-7 rounded-xl bg-emerald-100 text-emerald-900 font-bold text-xs sm:text-sm">
+                                {idx + 1}
+                              </span>
+                            )}
                           </td>
                           <td className="py-3 px-3 align-top font-bold text-emerald-950 whitespace-nowrap">{item.name}</td>
                           <td className="py-3 px-3 align-top text-slate-700 whitespace-nowrap">

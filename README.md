@@ -62,7 +62,7 @@ npm run build
 ### 🔐 అడ్మిన్ పాస్‌వర్డ్
 
 - లీడర్‌బోర్డ్ పాస్‌వర్డ్: `Syed2002@`
-- ఇది `src/components/Leaderboard.jsx` మరియు `google-apps-script.js` (`ADMIN_PASSWORD`) రెండింటిలోనూ సమానంగా ఉండాలి.
+- ఇది `src/services/sheetService.js` (`ADMIN_PASSWORD`) మరియు `google-apps-script.js` (`ADMIN_PASSWORD`) రెండింటిలోనూ సమానంగా ఉండాలి.
 - పాస్‌వర్డ్ మార్చాలంటే **రెండు ఫైల్స్**లో మార్చి, Apps Script ను **కొత్త వెర్షన్‌గా మళ్లీ Deploy** చేయండి.
 
 ### 🔄 స్క్రిప్ట్ అప్‌డేట్ చేసినప్పుడు
@@ -123,7 +123,7 @@ Apps Script లో కోడ్ మార్చిన ప్రతిసార�
 
 - `src/App.jsx` — స్క్రీన్ రూటింగ్
 - `src/components/ResultScreen.jsx` — WhatsApp కి మళ్లించే ఫలితాల తెర + జవాబుల సమీక్ష
-- `src/components/Leaderboard.jsx` — అడ్మిన్ పాస్‌వర్డ్ లీడర్‌బోర్డ్
+- `src/components/AdminDetails.jsx` — అడ్మిన్ పాస్‌వర్డ్ లీడర్‌బోర్డ్
 - `src/services/sheetService.js` — Google Sheet సబ్మిట్ / ఫెచ్
 - `src/data/dailySnapshots.json` — ప్రతి రోజు ఫ్రీజ్ చేసిన 10 ప్రశ్నలు (ఆటోమేటిక్)
 - `scripts/snapshot-daily-quiz.mjs` — రోజువారీ ప్రశ్నలను ఫ్రీజ్ చేసే స్క్రిప్ట్ (`npm run build` ముందు ఆటోమేటిక్‌గా రన్ అవుతుంది)
